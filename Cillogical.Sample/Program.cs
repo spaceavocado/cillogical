@@ -13,5 +13,7 @@ class Program
 
         Console.WriteLine(new Value(5).Evaluate(a).Equals(5));
         Console.WriteLine(new Value(5).Evaluate(a).GetType());
+
+        Reference.GetDataType("ref.(Boolean)");
     }
 }

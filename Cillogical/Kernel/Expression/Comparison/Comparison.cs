@@ -4,21 +4,21 @@ using System.Linq;
 
 public delegate bool Handler(params object[] operands);
 
-public class ComparisonExpression : Evaluable
+public class ComparisonExpression : IEvaluable
 {
     private string _operator;
     private string symbol;
     private Handler handler;
-    private Evaluable[] operands;
+    private IEvaluable[] operands;
 
-    public ComparisonExpression(string _operator, string symbol, Handler handler, params Evaluable[] operands) {
+    public ComparisonExpression(string _operator, string symbol, Handler handler, params IEvaluable[] operands) {
         this._operator = _operator;
         this.symbol = symbol;
         this.handler = handler;
         this.operands = operands;
     }
 
-    public object Evaluate(Context? context)
+    public object Evaluate(Dictionary<string, object>? context)
     {
         try
         {
@@ -37,7 +37,7 @@ public class ComparisonExpression : Evaluable
     ).ToArray();
 
 
-    public (object?, Evaluable?) Simplify(Context? context)
+    public (object?, IEvaluable?) Simplify(Dictionary<string, object>? context)
     {
         throw new NotImplementedException();
     }
