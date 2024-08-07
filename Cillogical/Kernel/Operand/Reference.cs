@@ -1,12 +1,8 @@
 ﻿namespace Cillogical.Kernel.Operand;
 using Cillogical.Kernel;
 using System;
-using System.IO;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 public enum DataType
 {
@@ -53,6 +49,11 @@ public class Reference : IEvaluable
     private object value;
 
     private const string NESTED_REFERENCE_RX = @"{([^{}]+)}";
+    private const string DATA_TYPE_RX = @"^.+\.\(([A-Z][a-z]+)\)$";
+    private const string DATA_TYPE_TRIM_RX = @".\(([A-Z][a-z]+)\)$";
+    private const string FLOAT_TRIM_RX = @"\.\d+";
+    private const string FLOAT_RX = @"^\d+\.\d+$";
+    private const string INT_RX = @"^0$|^[1-9]\d*$";
 
     public Reference(string address, ISerializeOptions? serializeOptions = null, ISimplifyOptions? simplifyOptions = null)
     {
@@ -84,7 +85,7 @@ public class Reference : IEvaluable
 
         return dataType switch
         {
-            DataType.Number => value,
+            DataType.Number => ToNumber(value),
             DataType.Integer => ToInteger(value),
             DataType.Float => ToFloat(value),
             DataType.Boolean => ToBoolean(value),
@@ -106,7 +107,7 @@ public class Reference : IEvaluable
     public static string DefaultSerializeTo(string operand) => $"${operand}";
 
     public static DataType GetDataType(string path) {
-        var re = new Regex(@"^.+\.\(([A-Z][a-z]+)\)$");
+        var re = new Regex(DATA_TYPE_RX);
         var matches = re.Matches(path);
 
         if (matches.Count > 0) {
@@ -130,7 +131,7 @@ public class Reference : IEvaluable
     }
 
     public static string TrimDataType(string path) {
-        var re = new Regex(@".\(([A-Z][a-z]+)\)$");
+        var re = new Regex(DATA_TYPE_TRIM_RX);
         return re.Replace(path, "");
     }
 
@@ -159,7 +160,27 @@ public class Reference : IEvaluable
 
     public static object ToNumber(object value)
     {
-        return 0;
+        switch (value)
+        {
+            case int:
+            case float:
+            case double:
+                return value;
+            case bool bit:
+                return bit ? 1 : 0;
+            case string text:
+                if (new Regex(FLOAT_RX).IsMatch(text))
+                {
+                    return float.Parse(text);
+                }
+                if (new Regex(INT_RX).IsMatch(text))
+                {
+                    return int.Parse(text);
+                }
+                throw new InvalidCastException($"invalid conversion from \"{value}\" text to number");
+            default:
+                throw new InvalidCastException($"invalid conversion from \"{value}\" to number");
+        }
     }
 
     public static int ToInteger(object value)
@@ -169,9 +190,19 @@ public class Reference : IEvaluable
             case int number:
                 return number;
             case float number:
-                return (int)Math.Ceiling(number);
+                return (int)Math.Floor(number);
+            case double number:
+                return (int)Math.Floor(number);
             case string text:
-                return int.Parse(text);
+                if (new Regex(FLOAT_RX).IsMatch(text))
+                {
+                    return int.Parse(new Regex(FLOAT_TRIM_RX).Replace(text, ""));
+                }
+                if (new Regex(INT_RX).IsMatch(text))
+                {
+                    return int.Parse(text);
+                }
+                throw new InvalidCastException($"invalid conversion from \"{value}\" text to int");
             case bool bit:
                 return bit ? 1 : 0;
             default:
@@ -184,24 +215,25 @@ public class Reference : IEvaluable
         switch (value)
         {
             case int number:
-                return number * 1f;
+                return number;
             case float number:
                 return number;
+            case double number:
+                return (float)number;
             case string text:
-                return float.Parse(text);
+                try {
+                    return float.Parse(text);
+                } catch {
+                    throw new InvalidCastException($"invalid conversion from \"{value}\" text to float");
+                }
             default:
                 throw new InvalidCastException($"invalid conversion from \"{value}\" to float");
         }
     }
 
     public static string ToString(object value) {
-        var text = value.ToString();
-        if (text == null)
-        {
-            throw new InvalidCastException($"invalid conversion from \"{value}\" to string");
-        }
-
-        return text;
+        var text = value.ToString() ?? string.Empty;
+        return value is bool ? text.ToLower() : text; 
     }
 
     public static bool ToBoolean(object value)
