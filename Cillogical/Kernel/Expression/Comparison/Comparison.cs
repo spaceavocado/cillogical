@@ -2,51 +2,57 @@ namespace Cillogical.Kernel.Expression.Comparison;
 using Cillogical.Kernel;
 using System.Linq;
 
-public delegate bool Handler(params object[] operands);
+public delegate bool Comparison(params object?[] operands);
 
-public class ComparisonExpression : IEvaluable
+public abstract class ComparisonExpression : IEvaluable
 {
-    private string _operator;
+    private string op;
     private string symbol;
-    private Handler handler;
+    private Comparison comparison;
     private IEvaluable[] operands;
 
-    public ComparisonExpression(string _operator, string symbol, Handler handler, params IEvaluable[] operands) {
-        this._operator = _operator;
+    public ComparisonExpression(string op, string symbol, Comparison comparison, params IEvaluable[] operands) {
+        this.op = op;
         this.symbol = symbol;
-        this.handler = handler;
+        this.comparison = comparison;
         this.operands = operands;
     }
 
     public object Evaluate(Dictionary<string, object>? context)
     {
-        try
-        {
-            return this.handler(
-                (from operand in this.operands select operand.Evaluate(context)).ToArray()
-            );
+        try {
+            return comparison((from operand in operands select operand.Evaluate(context)).ToArray());
         }
-        catch (Exception)
-        {
-            throw;
+        catch (Exception) {
+            return false;
         }
     }
 
-    public object Serialize() => new dynamic[] { this.symbol }.Concat(
-        this.operands.Select((operand) => operand.Serialize()).Cast<dynamic>()
-    ).ToArray();
+    public object Serialize() =>
+        new object[] { symbol }.Concat(operands.Select((operand) => operand.Serialize()));
 
 
     public object Simplify(Dictionary<string, object>? context)
     {
-        throw new NotImplementedException();
+        var res = new object?[] { };
+        foreach (var operand in operands) {
+            var val = operand.Simplify(context);
+            if (val is IEvaluable) {
+                return this;
+            }
+
+            Array.Resize(ref res, res.Length + 1);
+            res[res.Length - 1] = val;
+        }
+
+        return comparison(res);
     }
 
     public override string ToString()
     {
-        var result = $"({this.operands[0]} {this._operator}";
-        if (this.operands.Length > 1) { 
-            result += $" {String.Join(" ", this.operands.Skip(1))}";
+        var result = $"({operands[0]} {op}";
+        if (operands.Length > 1) { 
+            result += $" {String.Join(" ", operands.Skip(1))}";
         }
         return $"{result})";
     }

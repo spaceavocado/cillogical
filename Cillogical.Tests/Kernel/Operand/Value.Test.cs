@@ -20,6 +20,7 @@ public class ValueTest
     [InlineData('c')]
     [InlineData(true)]
     [InlineData(false)]
+    [InlineData(null)]
     public void Evaluate(object input)
     {
         var value = new Value(input);
