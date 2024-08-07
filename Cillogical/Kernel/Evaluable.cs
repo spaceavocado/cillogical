@@ -3,7 +3,7 @@ namespace Cillogical.Kernel;
 public interface IEvaluable {
     object? Evaluate(Dictionary<string, object>? context);
     object Serialize();
-    (object?, IEvaluable?) Simplify(Dictionary<string, object>? context);
+    object? Simplify(Dictionary<string, object>? context);
     string ToString();
 }
 

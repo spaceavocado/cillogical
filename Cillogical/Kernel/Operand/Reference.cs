@@ -17,24 +17,24 @@ public enum DataType
 
 public interface ISerializeOptions
 {
-    string From(string operand);
+    string? From(string operand);
     string To(string operand);
 }
 
 public interface ISimplifyOptions {
-    string[] IgnoredPaths { get; }
-    Regex[] IgnoredPathsRx { get; }
+    string[]? IgnoredPaths { get; }
+    Regex[]? IgnoredPathsRx { get; }
 }
 
 public class DefaultSerializeOptions : ISerializeOptions
 {
-    public string From(string operand) {
+    public string? From(string operand) {
         if (operand.Length > 1 && operand.StartsWith("$"))
         {
             return operand.Substring(1);
         }
 
-        throw new ArgumentException("invalid operand");
+        return null;
     }
     public string To(string operand) { return $"${operand}"; }
 }
@@ -46,7 +46,6 @@ public class Reference : IEvaluable
     private DataType dataType;
     private ISerializeOptions serializeOptions;
     private ISimplifyOptions? simplifyOptions;
-    private object value;
 
     private const string NESTED_REFERENCE_RX = @"{([^{}]+)}";
     private const string DATA_TYPE_RX = @"^.+\.\(([A-Z][a-z]+)\)$";
@@ -55,8 +54,11 @@ public class Reference : IEvaluable
     private const string FLOAT_RX = @"^\d+\.\d+$";
     private const string INT_RX = @"^0$|^[1-9]\d*$";
 
-    public Reference(string address, ISerializeOptions? serializeOptions = null, ISimplifyOptions? simplifyOptions = null)
-    {
+    public Reference(
+        string address,
+        ISerializeOptions? serializeOptions = null,
+        ISimplifyOptions? simplifyOptions = null
+    ) {
         var dataType = GetDataType(address);
         if (dataType == DataType.Unsupported) {
             throw new ArgumentException($"unsupported type casting, {address}");
@@ -76,22 +78,9 @@ public class Reference : IEvaluable
         }
 
         context = ContextUtils.FlattenContext(context);
-        var value = ContextLookup(context, path);
+        var (_, value) = Evaluate(context, path, dataType);
 
-        if (value == null)
-        {
-            return null;
-        }
-
-        return dataType switch
-        {
-            DataType.Number => ToNumber(value),
-            DataType.Integer => ToInteger(value),
-            DataType.Float => ToFloat(value),
-            DataType.Boolean => ToBoolean(value),
-            DataType.String => ToString(value),
-            _ => value,
-        };
+        return value;
     }
 
     public object Serialize() => serializeOptions.To(
@@ -100,11 +89,20 @@ public class Reference : IEvaluable
             : path
         );
 
-    public (object?, IEvaluable?) Simplify(Dictionary<string, object>? context = null) => (value, null);
+    public object? Simplify(Dictionary<string, object>? context = null) {
+        if (context == null) {
+            return this;
+        }
 
-    public override string ToString() => $"{{{address}}}";
+        context = ContextUtils.FlattenContext(context);
+        var (resolvedPath, value) = Evaluate(context, path, dataType);
 
-    public static string DefaultSerializeTo(string operand) => $"${operand}";
+        if (value != null || IsIgnoredPath(path, simplifyOptions?.IgnoredPaths, simplifyOptions?.IgnoredPathsRx)) {
+            return value;
+        }
+
+        return this;
+    }
 
     public static DataType GetDataType(string path) {
         var re = new Regex(DATA_TYPE_RX);
@@ -135,16 +133,38 @@ public class Reference : IEvaluable
         return re.Replace(path, "");
     }
 
-    public static object? ContextLookup(Dictionary<string, object> context, string path)
+    public static (string, object?) Evaluate(Dictionary<string, object> context, string path, DataType dataType)
+    {
+        context = ContextUtils.FlattenContext(context);
+        var (resolvedPath, value) = ContextLookup(context, path);
+
+        if (value == null) {
+            return (resolvedPath, null);
+        }
+
+        value = dataType switch
+        {
+            DataType.Number => ToNumber(value),
+            DataType.Integer => ToInteger(value),
+            DataType.Float => ToFloat(value),
+            DataType.Boolean => ToBoolean(value),
+            DataType.String => ToString(value),
+            _ => value,
+        };
+
+        return (resolvedPath, value);
+    }
+
+    public static (string, object?) ContextLookup(Dictionary<string, object> context, string path)
     {
         var re = new Regex(NESTED_REFERENCE_RX);
 
         var match = re.Match(path);
         while (match.Success)
         {
-            var val = ContextLookup(context, match.Groups[0].Value);
+            var (_, val) = ContextLookup(context, match.Groups[1].Value);
             if (val == null) {
-                return null;
+                return (path, null);
             }
 
             path = path.Substring(0, match.Index) + val + path.Substring(match.Index + match.Length);
@@ -152,10 +172,23 @@ public class Reference : IEvaluable
         }
 
         if (context.ContainsKey(path)) {
-            return context[path];
+            return (path, context[path]);
         }
 
-        return null;
+        return (path, null);
+    }
+
+    public static bool IsIgnoredPath(string path, string[]? ignoredPaths = null, Regex[]? ignoredPathsRx = null)
+    {
+        if (ignoredPaths != null) {
+            return ignoredPaths.Any((needle) => needle == path);
+        }
+
+        if (ignoredPathsRx != null) {
+            return ignoredPathsRx.Any((pattern) => pattern.IsMatch(path));
+        }
+
+        return false;
     }
 
     public static object ToNumber(object value)
@@ -255,4 +288,6 @@ public class Reference : IEvaluable
                 throw new InvalidCastException($"invalid conversion from \"{value}\" to boolean");
         }
     }
+
+    public override string ToString() => $"{{{address}}}";
 }

@@ -50,9 +50,8 @@ public class ValueTest
     [InlineData(false)]
     public void Simplify(object input)
     {
-        var (value, expression) = new Value(input).Simplify();
+        var value = new Value(input).Simplify();
         Assert.Equal(value, input);
-        Assert.Null(expression);
     }
 
     [Theory]

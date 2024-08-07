@@ -1,10 +1,66 @@
 ﻿using Xunit;
 using Cillogical.Kernel.Operand;
+using Cillogical.Kernel;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace Cillogical.UnitTests.Kernel.Operand;
 
 public class ReferenceTest
 {
+    private Dictionary<string, object> EXAMPLE_CONTEXT() {
+        return new Dictionary<string, object> {
+            { "refA", 1 },
+            {
+                "refB",
+                new Dictionary<string, object> {
+                    {"refB1", 2 },
+                    { "refB2", "refB1" },
+                    { "refB3", true },
+                }
+            },
+            {"refC", "refB1"},
+            {"refD", "refB2"},
+            {"refE", new object[]{1, new object[] { 2, 3, 4 } } },
+            {"refF", "A"},
+            {"refG", "1"},
+            {"refH", "1.1"},
+        };
+    }
+
+    [Theory]
+    [InlineData("", null)]
+    [InlineData("ref", null)]
+    [InlineData("$ref", "ref")]
+    public void DefaultSerializeOptionsFrom(string input, object expected)
+    {
+        Assert.Equal(new DefaultSerializeOptions().From(input), expected);
+    }
+
+    [Theory]
+    [InlineData("ref", "$ref")]
+    public void DefaultSerializeOptionsTo(string input, object expected)
+    {
+        Assert.Equal(new DefaultSerializeOptions().To(input), expected);
+    }
+
+    [Theory]
+    [InlineData("path", null, null, false)]
+    [InlineData("ignored", new string[]{ "bogus", "ignored" }, null, true)]
+    [InlineData("not", new string[] { "ignored" }, null, false)]
+    [InlineData("refC", null, new string[] { @"^ref" }, true)]
+    public void IsIgnoredPath(string path, string[]? ignoredPaths, string[]? ignoredPathsRx, object expected)
+    {
+        Assert.Equal(
+            Reference.IsIgnoredPath(
+                path,
+                ignoredPaths,
+                ignoredPathsRx?.Select((patern) => new Regex(patern)).ToArray()
+            ),
+        expected);
+    }
+
     [Theory]
     [InlineData("ref", DataType.Undefined)]
     [InlineData("ref.(X)", DataType.Undefined)]
@@ -26,6 +82,29 @@ public class ReferenceTest
     public void TrimDataType(string input, string expected)
     {
         Assert.Equal(Reference.TrimDataType(input), expected);
+    }
+
+    [Theory]
+    [InlineData("UNDEFINED", "UNDEFINED", null)]
+    [InlineData("refA", "refA", 1)]
+    [InlineData("refB.refB1", "refB.refB1", 2)]
+    [InlineData("refB.{refC}", "refB.refB1", 2)]
+    [InlineData("refB.{UNDEFINED}", "refB.{UNDEFINED}", null)]
+    [InlineData("refB.{refB.refB2}", "refB.refB1", 2)]
+    [InlineData("refB.{refB.{refD}}", "refB.refB1", 2)]
+    [InlineData("refE[0]", "refE[0]", 1)]
+    [InlineData("refE[2]", "refE[2]", null)]
+    [InlineData("refE[1][0]", "refE[1][0]", 2)]
+    [InlineData("refE[1][3]", "refE[1][3]", null)]
+    [InlineData("refE[{refA}][0]", "refE[1][0]", 2)]
+    [InlineData("refE[{refA}][{refB.refB1}]", "refE[1][2]", 4)]
+    [InlineData("ref{refF}", "refA", 1)]
+    [InlineData("ref{UNDEFINED}", "ref{UNDEFINED}", null)]
+    public void ContextLookup(string path, string? expectedPath, object? expectedValue)
+    {
+        var (resolvedPath, value) = Reference.ContextLookup(EXAMPLE_CONTEXT(), path);
+        Assert.Equal(resolvedPath, expectedPath);
+        Assert.Equal(value, expectedValue);
     }
 
     [Theory]

@@ -37,7 +37,7 @@ public class ComparisonExpression : IEvaluable
     ).ToArray();
 
 
-    public (object?, IEvaluable?) Simplify(Dictionary<string, object>? context)
+    public object Simplify(Dictionary<string, object>? context)
     {
         throw new NotImplementedException();
     }
