@@ -23,7 +23,7 @@ public class ValueTest
     public void Evaluate(object input)
     {
         var value = new Value(input);
-        Assert.Equal(value.Evaluate(), input);
+        Assert.Equal(input, value.Evaluate());
     }
 
     [Theory]
@@ -37,7 +37,7 @@ public class ValueTest
     public void Serialize(object input)
     {
         var value = new Value(input);
-        Assert.Equal(value.Serialize(), input);
+        Assert.Equal(input, value.Serialize());
     }
 
     [Theory]
@@ -51,7 +51,7 @@ public class ValueTest
     public void Simplify(object input)
     {
         var value = new Value(input).Simplify();
-        Assert.Equal(value, input);
+        Assert.Equal(input, value);
     }
 
     [Theory]
@@ -65,6 +65,6 @@ public class ValueTest
     public void toString(object input, string expected)
     {
         var value = new Value(input);
-        Assert.Equal(value.ToString(), expected);
+        Assert.Equal(expected, value.ToString());
     }
 }

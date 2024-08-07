@@ -155,14 +155,14 @@ public class Reference : IEvaluable
         return (resolvedPath, value);
     }
 
-    public static (string, object?) ContextLookup(Dictionary<string, object> context, string path)
+    public static (string, object?) ContextLookup(Dictionary<string, object> flattenContext, string path)
     {
         var re = new Regex(NESTED_REFERENCE_RX);
 
         var match = re.Match(path);
         while (match.Success)
         {
-            var (_, val) = ContextLookup(context, match.Groups[1].Value);
+            var (_, val) = ContextLookup(flattenContext, match.Groups[1].Value);
             if (val == null) {
                 return (path, null);
             }
@@ -171,8 +171,8 @@ public class Reference : IEvaluable
             match = re.Match(path);
         }
 
-        if (context.ContainsKey(path)) {
-            return (path, context[path]);
+        if (flattenContext.ContainsKey(path)) {
+            return (path, flattenContext[path]);
         }
 
         return (path, null);
@@ -180,12 +180,12 @@ public class Reference : IEvaluable
 
     public static bool IsIgnoredPath(string path, string[]? ignoredPaths = null, Regex[]? ignoredPathsRx = null)
     {
-        if (ignoredPaths != null) {
-            return ignoredPaths.Any((needle) => needle == path);
+        if (ignoredPaths != null && ignoredPaths.Any((needle) => needle == path)) {
+            return true;
         }
 
-        if (ignoredPathsRx != null) {
-            return ignoredPathsRx.Any((pattern) => pattern.IsMatch(path));
+        if (ignoredPathsRx != null && ignoredPathsRx.Any((pattern) => pattern.IsMatch(path))) {
+            return true;
         }
 
         return false;

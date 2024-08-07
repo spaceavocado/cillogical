@@ -1,5 +1,4 @@
 ﻿using Cillogical.Kernel;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cillogical.UnitTests.Kernel;
 
@@ -18,7 +17,7 @@ public class EvalualeTest
     [InlineData(new int[] { 1 }, false)]
     public void IsPrimitive(object input, bool expected)
     {
-        Assert.Equal(Primitive.IsPrimitive(input), expected);
+        Assert.Equal(expected, Primitive.IsPrimitive(input));
     }
 
     public static IEnumerable<object[]> FlattenContextData()
@@ -73,6 +72,6 @@ public class EvalualeTest
     [MemberData(nameof(FlattenContextData))]
     public void FlattenContext(Dictionary<string, object> input, Dictionary<string, object> expected)
     {
-        Assert.Equal(ContextUtils.FlattenContext(input), expected);
+        Assert.Equal(expected, ContextUtils.FlattenContext(input));
     }
 }
