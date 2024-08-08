@@ -56,4 +56,23 @@ public abstract class ComparisonExpression : IEvaluable
         }
         return $"{result})";
     }
+
+    public static bool IsNumber(object? subject) =>
+        subject is not null && subject switch {
+            int => true,
+            float => true,
+            decimal => true,
+            double => true,
+            _ => false
+        };
+
+    public static bool IsText(object? subject) =>
+        subject is not null && subject switch
+        {
+            string => true,
+            char => true,
+            _ => false
+        };
 }
+
+// overlap

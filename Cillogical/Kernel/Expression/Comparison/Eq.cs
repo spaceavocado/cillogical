@@ -4,5 +4,5 @@ using Cillogical.Kernel;
 public class Eq : ComparisonExpression
 {
     public Eq(IEvaluable left, IEvaluable right, string symbol = "==") :
-        base("==", symbol, (object?[] operands) => (operands[0] ?? new object { }).Equals(operands[1]), left, right) {}
+        base("==", symbol, (object?[] operands) => object.Equals(operands[0], operands[1]), left, right) { }
 }

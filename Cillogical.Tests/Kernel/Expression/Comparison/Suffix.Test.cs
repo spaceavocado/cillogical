@@ -4,19 +4,16 @@ using Cillogical.Kernel;
 
 namespace Cillogical.UnitTests.Kernel.Expression.Comparison;
 
-public class EqTest
+public class SuffixTest
 {
     public static IEnumerable<object[]> EvaluateTestData()
     {
         // Truthy
-        yield return new object[] { new Value(1), new Value(1), true };
-        yield return new object[] { new Value(1.1), new Value(1.1), true };
-        yield return new object[] { new Value(1.1f), new Value(1.1f), true };
-        yield return new object[] { new Value("1"), new Value("1"), true };
-        yield return new object[] { new Value(true), new Value(true), true };
-        yield return new object[] { new Value(false), new Value(false), true };
-        yield return new object[] { new Value(null), new Value(null), true };
+        yield return new object[] { new Value("bogus"), new Value("us"), true };
+        yield return new object[] { new Value("bogus"), new Value('s'), true };
+        yield return new object[] { new Value("b"), new Value('b'), true };
         // Falsy
+        yield return new object[] { new Value("bogus"), new Value("bogu"), false };
         yield return new object[] { new Value(1), new Value(1.1), false };
         yield return new object[] { new Value(1), new Value("1"), false };
         yield return new object[] { new Value(1), new Value(true), false };
@@ -33,7 +30,7 @@ public class EqTest
     [MemberData(nameof(EvaluateTestData))]
     public void Evaluate(IEvaluable left, IEvaluable right, bool expected)
     {
-        var expression = new Eq(left, right);
+        var expression = new Suffix(left, right);
         Assert.Equal(expected, expression.Evaluate(null));
     }
 }
