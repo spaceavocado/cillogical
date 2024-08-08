@@ -3,8 +3,8 @@ using Cillogical.Kernel;
 
 public class In : ComparisonExpression
 {
-    public In(IEvaluable left, IEvaluable right, string symbol = "==") :
-        base("==", symbol, (object?[] operands) =>
+    public In(IEvaluable left, IEvaluable right, string symbol = "IN") :
+        base("<in>", symbol, (object?[] operands) =>
         {
             var leftIsEnumerable = operands[0] is IEnumerable<object>;
             var rightIsEnumerable = operands[1] is IEnumerable<object>;

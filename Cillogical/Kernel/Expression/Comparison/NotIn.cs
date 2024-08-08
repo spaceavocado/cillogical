@@ -3,8 +3,8 @@ using Cillogical.Kernel;
 
 public class NotIn : ComparisonExpression
 {
-    public NotIn(IEvaluable left, IEvaluable right, string symbol = "==") :
-        base("==", symbol, (object?[] operands) =>
+    public NotIn(IEvaluable left, IEvaluable right, string symbol = "NOT IN") :
+        base("<not in>", symbol, (object?[] operands) =>
         {
             var leftIsEnumerable = operands[0] is IEnumerable<object>;
             var rightIsEnumerable = operands[1] is IEnumerable<object>;
