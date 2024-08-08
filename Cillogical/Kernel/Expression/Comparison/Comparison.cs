@@ -74,3 +74,7 @@ public abstract class ComparisonExpression : IEvaluable
             _ => false
         };
 }
+
+// in
+// not in
+// overlap
