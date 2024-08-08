@@ -112,4 +112,36 @@ public class ComparisionTest
         var expression = new ComparisionMock(op, operators);
         Assert.Equal(expected, $"{expression}");
     }
+
+    [Theory]
+    [InlineData(1, true)]
+    [InlineData(1f, true)]
+    [InlineData(1d, true)]
+    [InlineData("1", false)]
+    [InlineData('c', false)]
+    [InlineData(true, false)]
+    [InlineData(false, false)]
+    [InlineData(null, false)]
+    [InlineData(new object[] {}, false)]
+
+    public void IsNumber(object? value, bool expected)
+    {
+        Assert.Equal(expected, ComparisonExpression.IsNumber(value));
+    }
+
+    [Theory]
+    [InlineData("1", true)]
+    [InlineData('c', true)]
+    [InlineData(1, false)]
+    [InlineData(1f, false)]
+    [InlineData(1d, false)]
+    [InlineData(true, false)]
+    [InlineData(false, false)]
+    [InlineData(null, false)]
+    [InlineData(new object[] { }, false)]
+
+    public void IsText(object? value, bool expected)
+    {
+        Assert.Equal(expected, ComparisonExpression.IsText(value));
+    }
 }
