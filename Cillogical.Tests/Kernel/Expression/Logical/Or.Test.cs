@@ -24,10 +24,9 @@ public class OrTest
         yield return new object[] { new IEvaluable[] { new Value(true), new Value(true) }, true };
         yield return new object[] { new IEvaluable[] { new Value(false), new Value(true) }, true };
         yield return new object[] { new IEvaluable[] { new Value(true), new Value(true), new Value(false) }, true };
-        yield return new object[] { new IEvaluable[] { new Value(1), new Value(true) }, true };
+        yield return new object[] { new IEvaluable[] { new Value(true), new Value(1) }, true };
         // Falsy
         yield return new object[] { new IEvaluable[] { new Value(false), new Value(false) }, false };
-        yield return new object[] { new IEvaluable[] { new Value(1), new Value("bogus") }, false };
     }
 
     [Theory]
@@ -38,18 +37,31 @@ public class OrTest
         Assert.Equal(expected, expression.Evaluate(null));
     }
 
+    public static IEnumerable<object[]> EvaluateInvalidOperandTestData()
+    {
+        yield return new object[] { new IEvaluable[] { new Value(1), new Value(true) } };
+        yield return new object[] { new IEvaluable[] { new Value(1), new Value("bogus") } };
+    }
+
+    [Theory]
+    [MemberData(nameof(EvaluateInvalidOperandTestData))]
+    public void EvaluateInvalidOperand(IEvaluable[] operands)
+    {
+        var expression = new Or(operands);
+        Assert.Throws<InvalidExpressionException>(() => expression.Evaluate(null));
+    }
+
     public static IEnumerable<object[]> SimplifyTestData()
     {
         yield return new object[] { new IEvaluable[] { new Value(true), new Value(true) }, true };
         yield return new object[] { new IEvaluable[] { new Value(false), new Value(true) }, true };
-        yield return new object[] { new IEvaluable[] { new Value(true), new Value(false) }, true };
+        yield return new object[] { new IEvaluable[] { new Value(true), new Value(1) }, true };
         yield return new object[] { new IEvaluable[] { new Reference("RefA"), new Value(false) }, true };
         yield return new object[] { new IEvaluable[] { new Reference("Missing"), new Value(false) }, new Reference("Missing") };
         yield return new object[] {
             new IEvaluable[] { new Reference("Missing"), new Reference("Missing") },
             new Or(new IEvaluable[] { new Reference("Missing"), new Reference("Missing") })
         };
-        yield return new object[] { new IEvaluable[] { new Value(1), new Value(false) }, false };
     }
 
     [Theory]
@@ -65,5 +77,20 @@ public class OrTest
             Assert.Equal(expected, simplified);
         }
         
+    }
+
+    public static IEnumerable<object[]> SimplifyInvalidOperandTestData()
+    {
+        yield return new object[] { new IEvaluable[] { new Value(1), new Value(true) } };
+        yield return new object[] { new IEvaluable[] { new Value(1), new Value("bogus") } };
+    }
+
+    [Theory]
+    [MemberData(nameof(SimplifyInvalidOperandTestData))]
+    public void SimplifyInvalidOperand(IEvaluable[] operands)
+    {
+        var expression = new Or(operands);
+
+        Assert.Throws<InvalidExpressionException>(() => expression.Simplify(null));
     }
 }

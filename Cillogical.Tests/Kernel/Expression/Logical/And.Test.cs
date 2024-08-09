@@ -27,9 +27,6 @@ public class AndTest
         yield return new object[] { new IEvaluable[] { new Value(true), new Value(false) }, false };
         yield return new object[] { new IEvaluable[] { new Value(false), new Value(true) }, false };
         yield return new object[] { new IEvaluable[] { new Value(false), new Value(false) }, false };
-        yield return new object[] { new IEvaluable[] { new Value(true), new Value(1) }, false };
-        yield return new object[] { new IEvaluable[] { new Value(1), new Value(true) }, false };
-        yield return new object[] { new IEvaluable[] { new Value(1), new Value("bogus") }, false };
     }
 
     [Theory]
@@ -38,6 +35,21 @@ public class AndTest
     {
         var expression = new And(operands);
         Assert.Equal(expected, expression.Evaluate(null));
+    }
+
+    public static IEnumerable<object[]> EvaluateInvalidOperandTestData()
+    {
+        yield return new object[] { new IEvaluable[] { new Value(true), new Value(1) } };
+        yield return new object[] { new IEvaluable[] { new Value(1), new Value(true) } };
+        yield return new object[] { new IEvaluable[] { new Value(1), new Value("bogus") } };
+    }
+
+    [Theory]
+    [MemberData(nameof(EvaluateInvalidOperandTestData))]
+    public void EvaluateInvalidOperand(IEvaluable[] operands)
+    {
+        var expression = new And(operands);
+        Assert.Throws<InvalidExpressionException>(() => expression.Evaluate(null));
     }
 
     public static IEnumerable<object[]> SimplifyTestData()
@@ -50,7 +62,6 @@ public class AndTest
             new IEvaluable[] { new Reference("Missing"), new Reference("Missing") },
             new And(new IEvaluable[] { new Reference("Missing"), new Reference("Missing") })
         };
-        yield return new object[] { new IEvaluable[] { new Value(1), new Value(true) }, false };
     }
 
     [Theory]
@@ -64,7 +75,22 @@ public class AndTest
             Assert.Equal($"{expected}", $"{simplified}");
         } else {
             Assert.Equal(expected, simplified);
-        }
-        
+        } 
+    }
+
+    public static IEnumerable<object[]> SimplifyInvalidOperandTestData()
+    {
+        yield return new object[] { new IEvaluable[] { new Value(true), new Value(1) } };
+        yield return new object[] { new IEvaluable[] { new Value(1), new Value(true) } };
+        yield return new object[] { new IEvaluable[] { new Value(1), new Value("bogus") } };
+    }
+
+    [Theory]
+    [MemberData(nameof(SimplifyInvalidOperandTestData))]
+    public void SimplifyInvalidOperand(IEvaluable[] operands)
+    {
+        var expression = new And(operands);
+
+        Assert.Throws<InvalidExpressionException>(() => expression.Simplify(null));
     }
 }
