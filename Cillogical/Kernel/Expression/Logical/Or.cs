@@ -1,9 +1,9 @@
 ﻿namespace Cillogical.Kernel.Expression.Logical;
 using Cillogical.Kernel;
 
-public class And : LogicalExpression
+public class Or : LogicalExpression
 {
-    public And(IEvaluable[] operands, string symbol = "AND") : base("AND", symbol, operands)
+    public Or(IEvaluable[] operands, string symbol = "OR") : base("OR", symbol, operands)
     {
         if (operands.Length < 2) {
             throw new ArgumentException("Non unary logical expression must have at least 2 operands");
@@ -14,12 +14,12 @@ public class And : LogicalExpression
     {
         foreach (var operand in operands) {
             var res = operand.Evaluate(context);
-            if (res is not bool || !(bool)res) {
-                return false;
+            if (res is bool && (bool)res) {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
 
@@ -30,12 +30,12 @@ public class And : LogicalExpression
         {
             var res = operand.Simplify(context);
             if (res is bool) {
-                if (!(bool)res) {
-                    return false;
+                if ((bool)res) {
+                    return true;
                 }
                 continue;
             } else if (res is not IEvaluable) {
-                return false;
+                continue;
             }
 
             Array.Resize(ref simplified, simplified.Length + 1);
@@ -43,13 +43,13 @@ public class And : LogicalExpression
         }
 
         if (simplified.Length == 0) {
-            return true;
+            return false;
         }
 
         if (simplified.Length == 1) {
             return simplified[0];
         }
 
-        return new And(simplified, symbol);
+        return new Or(simplified, symbol);
     }
 }
