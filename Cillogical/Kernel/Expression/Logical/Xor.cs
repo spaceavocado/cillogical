@@ -25,10 +25,19 @@ public class Xor : LogicalExpression
                 throw new InvalidExpressionException($"invalid evaluated operand \"{res}\" ({operand}) in XOR expression, must be boolean value");
             }
 
-            xor = xor is null ? (bool)res : xor ^ (bool)res;
+            if (xor is null) {
+                xor = (bool)res;
+                continue;
+            }
+
+            if ((bool)xor && (bool)res) {
+                return false;
+            }
+
+            xor = (bool)res ? true : xor;
         }
 
-        return xor is not null ? xor : false;
+        return xor ?? false;
     }
 
 
