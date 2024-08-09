@@ -18,7 +18,9 @@ public class Xor : LogicalExpression
 
     public override object Evaluate(Dictionary<string, object>? context)
     {
+        context = ContextUtils.FlattenContext(context);
         bool? xor = null;
+
         foreach (var operand in operands) {
             var res = operand.Evaluate(context);
             if (res is not bool) {
@@ -43,6 +45,7 @@ public class Xor : LogicalExpression
 
     public override object Simplify(Dictionary<string, object>? context)
     {
+        context = ContextUtils.FlattenContext(context);
         var truthy = 0;
         var simplified = new IEvaluable[] { };
 

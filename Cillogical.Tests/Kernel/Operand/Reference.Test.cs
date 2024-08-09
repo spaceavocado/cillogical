@@ -19,7 +19,7 @@ public class SimplifyOptions : ISimplifyOptions
 
 public class ReferenceTest
 {
-    private Dictionary<string, object> EXAMPLE_CONTEXT() {
+    private Dictionary<string, object>? EXAMPLE_CONTEXT() {
         return ContextUtils.FlattenContext(
             new Dictionary<string, object> {
                 { "refA", 1 },

@@ -26,7 +26,10 @@ public static class Primitive
 
 public static class ContextUtils
 {
-    public static Dictionary<string, object> FlattenContext(Dictionary<string, object> context) {
+    public static Dictionary<string, object>? FlattenContext(Dictionary<string, object>? context) {
+        if (context == null) {
+            return null;
+        }
         if (context is FlattenContext<string, object>) {
             return context;
         }

@@ -20,8 +20,10 @@ public class EvalualeTest
         Assert.Equal(expected, Primitive.IsPrimitive(input));
     }
 
-    public static IEnumerable<object[]> FlattenContextData()
+    public static IEnumerable<object?[]> FlattenContextData()
     {
+        yield return new object?[] { null, null };
+
         yield return new object[] {
             new FlattenContext<string, object> { { "a", 1 } },
             new FlattenContext<string, object> { { "a", 1 } }
@@ -70,7 +72,7 @@ public class EvalualeTest
 
     [Theory]
     [MemberData(nameof(FlattenContextData))]
-    public void FlattenContext(Dictionary<string, object> input, Dictionary<string, object> expected)
+    public void FlattenContext(Dictionary<string, object>? input, Dictionary<string, object>? expected)
     {
         Assert.Equal(expected, ContextUtils.FlattenContext(input));
     }

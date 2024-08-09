@@ -12,6 +12,8 @@ public class And : LogicalExpression
 
     public override object Evaluate(Dictionary<string, object>? context)
     {
+        context = ContextUtils.FlattenContext(context);
+
         foreach (var operand in operands) {
             var res = operand.Evaluate(context);
             if (res is not bool) {
@@ -27,7 +29,9 @@ public class And : LogicalExpression
 
     public override object Simplify(Dictionary<string, object>? context)
     {
+        context = ContextUtils.FlattenContext(context);
         var simplified = new IEvaluable[] { };
+
         foreach (var operand in operands)
         {
             var res = operand.Simplify(context);

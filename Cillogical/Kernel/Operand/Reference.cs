@@ -133,7 +133,7 @@ public class Reference : IEvaluable
         return re.Replace(path, "");
     }
 
-    public static (string, object?) Evaluate(Dictionary<string, object> context, string path, DataType dataType)
+    public static (string, object?) Evaluate(Dictionary<string, object>? context, string path, DataType dataType)
     {
         context = ContextUtils.FlattenContext(context);
         var (resolvedPath, value) = ContextLookup(context, path);
@@ -155,8 +155,12 @@ public class Reference : IEvaluable
         return (resolvedPath, value);
     }
 
-    public static (string, object?) ContextLookup(Dictionary<string, object> flattenContext, string path)
+    public static (string, object?) ContextLookup(Dictionary<string, object>? flattenContext, string path)
     {
+        if (flattenContext is null) {
+            return (path, null);
+        }
+
         var re = new Regex(NESTED_REFERENCE_RX);
 
         var match = re.Match(path);

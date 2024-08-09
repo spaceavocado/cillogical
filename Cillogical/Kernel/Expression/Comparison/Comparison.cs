@@ -20,6 +20,8 @@ public abstract class ComparisonExpression : IEvaluable
 
     public object Evaluate(Dictionary<string, object>? context)
     {
+        context = ContextUtils.FlattenContext(context);
+
         try {
             return comparison((from operand in operands select operand.Evaluate(context)).ToArray());
         }
@@ -34,6 +36,8 @@ public abstract class ComparisonExpression : IEvaluable
 
     public object Simplify(Dictionary<string, object>? context)
     {
+        context = ContextUtils.FlattenContext(context);
+
         var res = new object?[] { };
         foreach (var operand in operands) {
             var val = operand.Simplify(context);

@@ -20,8 +20,10 @@ public class Collection : IEvaluable
         this.escapedOperators = escapedOperators ?? new HashSet<string>();
     }
 
-    public object Evaluate(Dictionary<string, object>? context = null) =>
-        items.Select((item) => item.Evaluate(context)).ToArray();
+    public object Evaluate(Dictionary<string, object>? context = null) {
+        context = ContextUtils.FlattenContext(context);    
+        return items.Select((item) => item.Evaluate(context)).ToArray();
+    }
 
     public object Serialize() {
         var head = items[0].Serialize();
@@ -33,6 +35,8 @@ public class Collection : IEvaluable
     }
 
     public object Simplify(Dictionary<string, object>? context = null) {
+        context = ContextUtils.FlattenContext(context);
+
         var res = new object?[] { };
         foreach (var item in items) {
             var val = item.Simplify(context);
