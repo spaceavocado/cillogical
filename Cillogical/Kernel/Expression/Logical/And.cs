@@ -14,7 +14,9 @@ public class And : LogicalExpression
     {
         foreach (var operand in operands) {
             var res = operand.Evaluate(context);
-            if (res is not bool || !(bool)res) {
+            if (res is not bool) {
+                throw new InvalidExpressionException($"invalid evaluated operand \"{res}\" ({operand}) in AND expression, must be boolean value");
+            } else if (!(bool)res) {
                 return false;
             }
         }
@@ -35,7 +37,7 @@ public class And : LogicalExpression
                 }
                 continue;
             } else if (res is not IEvaluable) {
-                return false;
+                throw new InvalidExpressionException($"invalid simplified operand \"{res}\" ({operand}) in AND expression, must be boolean value");
             }
 
             Array.Resize(ref simplified, simplified.Length + 1);

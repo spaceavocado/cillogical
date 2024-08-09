@@ -1,13 +1,17 @@
 ﻿namespace Cillogical.Kernel.Expression.Logical;
 using Cillogical.Kernel;
 
-public class Or : LogicalExpression
+public class Nor : LogicalExpression
 {
-    public Or(IEvaluable[] operands, string symbol = "OR") : base("OR", symbol, operands)
+    private string notSymbol;
+
+    public Nor(IEvaluable[] operands, string symbol = "NOR", string notSymbol = "NOT") : base("NOR", symbol, operands)
     {
         if (operands.Length < 2) {
             throw new ArgumentException("Non unary logical expression must have at least 2 operands");
         }
+
+        this.notSymbol = notSymbol;
     }
 
     public override object Evaluate(Dictionary<string, object>? context)
@@ -15,15 +19,14 @@ public class Or : LogicalExpression
         foreach (var operand in operands) {
             var res = operand.Evaluate(context);
             if (res is not bool) {
-                throw new InvalidExpressionException($"invalid evaluated operand \"{res}\" ({operand}) in OR expression, must be boolean value");
+                throw new InvalidExpressionException($"invalid evaluated operand \"{res}\" ({operand}) in NOR expression, must be boolean value");
             } else if ((bool)res) {
-                return true;
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
-
 
     public override object Simplify(Dictionary<string, object>? context)
     {
@@ -33,11 +36,11 @@ public class Or : LogicalExpression
             var res = operand.Simplify(context);
             if (res is bool) {
                 if ((bool)res) {
-                    return true;
+                    return false;
                 }
                 continue;
             } else if (res is not IEvaluable) {
-                throw new InvalidExpressionException($"invalid simplified operand \"{res}\" ({operand}) in OR expression, must be boolean value");
+                throw new InvalidExpressionException($"invalid simplified operand \"{res}\" ({operand}) in NOR expression, must be boolean value");
             }
 
             Array.Resize(ref simplified, simplified.Length + 1);
@@ -45,13 +48,13 @@ public class Or : LogicalExpression
         }
 
         if (simplified.Length == 0) {
-            return false;
+            return true;
         }
 
         if (simplified.Length == 1) {
-            return simplified[0];
+            return new Not(simplified[0]);
         }
 
-        return new Or(simplified, symbol);
+        return new Nor(simplified, symbol, notSymbol);
     }
 }

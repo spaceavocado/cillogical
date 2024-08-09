@@ -2,6 +2,10 @@
 using Cillogical.Kernel;
 using System.Linq;
 
+public class InvalidExpressionException : Exception {
+    public InvalidExpressionException(string message) : base(message) { }
+};
+
 public abstract class LogicalExpression : IEvaluable
 {
     private string op;
