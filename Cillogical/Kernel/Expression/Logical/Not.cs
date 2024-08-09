@@ -3,13 +3,7 @@ using Cillogical.Kernel;
 
 public class Not : LogicalExpression
 {
-    public Not(IEvaluable operand, string symbol = "NOT") : base("NOT", symbol, operand)
-    {
-        if (operands.Length != 1)
-        {
-            throw new ArgumentException("Unary logical expression must have 1 operand");
-        }
-    }
+    public Not(IEvaluable operand, string symbol = "NOT") : base("NOT", symbol, operand) { }
 
     public override object Evaluate(Dictionary<string, object>? context)
     {
