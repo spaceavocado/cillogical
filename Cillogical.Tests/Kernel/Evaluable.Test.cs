@@ -40,9 +40,10 @@ public class EvalualeTest
                 { "b", new Dictionary<string, object?> {
                     { "c", 5 },
                     { "d", true }
-                }}
+                }},
+                { "c", null },
             },
-            new Dictionary<string, object?> { { "a", 1 }, { "b.c", 5 }, { "b.d", true } }
+            new Dictionary<string, object?> { { "a", 1 }, { "b.c", 5 }, { "b.d", true }, { "c", null } }
         };
 
         yield return new object[] {
