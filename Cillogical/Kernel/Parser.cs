@@ -1,10 +1,8 @@
 ﻿using Cillogical.Kernel.Expression.Comparison;
 using Cillogical.Kernel.Expression.Logical;
 using Cillogical.Kernel.Operand;
-using System;
 
 namespace Cillogical.Kernel;
-
 
 public class UnexpectedExpressionInputException : Exception
 {
@@ -69,7 +67,7 @@ public class Parser {
     public static char DEFAULT_ESCAPE_CHARACTER = '\\';
 
     private Dictionary<Operator, string> operatorMapping;
-    private Dictionary<Operator, Func<IEvaluable[], IEvaluable>> operatorHandlerMapping;
+    private Dictionary<string, Func<IEvaluable[], IEvaluable>> operatorHandlerMapping;
     private ISerializeOptions serializeOptions;
     private ISimplifyOptions? simplifyOptions;
     private char escapeCharacter;
@@ -83,34 +81,34 @@ public class Parser {
     ) {
         this.serializeOptions = this.serializeOptions ?? new DefaultSerializeOptions();
         this.simplifyOptions = simplifyOptions;
-        this.escapeCharacter = escapeCharacter ?? '\\';
+        this.escapeCharacter = escapeCharacter ?? DEFAULT_ESCAPE_CHARACTER;
         this.operatorMapping = operatorMapping ?? DEFAULT_OPERATOR_MAPPING;
 
         Func<Operator, string> operatorSymbol = (Operator op) => this.operatorMapping[op] ?? DEFAULT_OPERATOR_MAPPING[op];
 
-        this.operatorHandlerMapping = new Dictionary<Operator, Func<IEvaluable[], IEvaluable>> {
+        operatorHandlerMapping = new Dictionary<string, Func<IEvaluable[], IEvaluable>> {
             // Logical
-            { Operator.AND, MultiaryHandler((operands) => new And(operands, operatorSymbol(Operator.AND))) },
-            { Operator.OR, MultiaryHandler((operands) => new Or(operands, operatorSymbol(Operator.OR))) },
-            { Operator.NOR, MultiaryHandler((operands) => new Nor(operands, operatorSymbol(Operator.NOR), operatorSymbol(Operator.NOT))) },
-            { Operator.XOR, MultiaryHandler((operands) => new Xor(operands, operatorSymbol(Operator.XOR), operatorSymbol(Operator.NOT), operatorSymbol(Operator.NOR))) },
-            { Operator.NOT, UnaryHandler((operand) => new Not(operand, operatorSymbol(Operator.NOT))) },
+            { operatorSymbol(Operator.AND), MultiaryHandler((operands) => new And(operands, operatorSymbol(Operator.AND))) },
+            { operatorSymbol(Operator.OR), MultiaryHandler((operands) => new Or(operands, operatorSymbol(Operator.OR))) },
+            { operatorSymbol(Operator.NOR), MultiaryHandler((operands) => new Nor(operands, operatorSymbol(Operator.NOR), operatorSymbol(Operator.NOT))) },
+            { operatorSymbol(Operator.XOR), MultiaryHandler((operands) => new Xor(operands, operatorSymbol(Operator.XOR), operatorSymbol(Operator.NOT), operatorSymbol(Operator.NOR))) },
+            { operatorSymbol(Operator.NOT), UnaryHandler((operand) => new Not(operand, operatorSymbol(Operator.NOT))) },
             //// Comparison
-            { Operator.EQ, BinaryHandler((left, right) => new Eq(left, right, operatorSymbol(Operator.EQ))) },
-            { Operator.NE, BinaryHandler((left, right) => new Ne(left, right, operatorSymbol(Operator.NE))) },
-            { Operator.GT, BinaryHandler((left, right) => new Gt(left, right, operatorSymbol(Operator.GT))) },
-            { Operator.GE, BinaryHandler((left, right) => new Ge(left, right, operatorSymbol(Operator.GE))) },
-            { Operator.LT, BinaryHandler((left, right) => new Lt(left, right, operatorSymbol(Operator.LT))) },
-            { Operator.LE, BinaryHandler((left, right) => new Le(left, right, operatorSymbol(Operator.LE))) },
-            { Operator.NULL, UnaryHandler((operand) => new Null(operand, operatorSymbol(Operator.NULL))) },
-            { Operator.PRESENT, UnaryHandler((operand) => new Present(operand, operatorSymbol(Operator.PRESENT))) },
-            { Operator.IN, BinaryHandler((left, right) => new In(left, right, operatorSymbol(Operator.IN))) },
-            { Operator.NOTIN, BinaryHandler((left, right) => new NotIn(left, right, operatorSymbol(Operator.NOTIN))) },
-            { Operator.OVERLAP, BinaryHandler((left, right) => new Overlap(left, right, operatorSymbol(Operator.OVERLAP))) },
-            { Operator.PREFIX, BinaryHandler((left, right) => new Prefix(left, right, operatorSymbol(Operator.PREFIX))) },
-            { Operator.SUFFIX, BinaryHandler((left, right) => new Suffix(left, right, operatorSymbol(Operator.SUFFIX))) },
+            { operatorSymbol(Operator.EQ), BinaryHandler((left, right) => new Eq(left, right, operatorSymbol(Operator.EQ))) },
+            { operatorSymbol(Operator.NE), BinaryHandler((left, right) => new Ne(left, right, operatorSymbol(Operator.NE))) },
+            { operatorSymbol(Operator.GT), BinaryHandler((left, right) => new Gt(left, right, operatorSymbol(Operator.GT))) },
+            { operatorSymbol(Operator.GE), BinaryHandler((left, right) => new Ge(left, right, operatorSymbol(Operator.GE))) },
+            { operatorSymbol(Operator.LT), BinaryHandler((left, right) => new Lt(left, right, operatorSymbol(Operator.LT))) },
+            { operatorSymbol(Operator.LE), BinaryHandler((left, right) => new Le(left, right, operatorSymbol(Operator.LE))) },
+            { operatorSymbol(Operator.NULL), UnaryHandler((operand) => new Null(operand, operatorSymbol(Operator.NULL))) },
+            { operatorSymbol(Operator.PRESENT), UnaryHandler((operand) => new Present(operand, operatorSymbol(Operator.PRESENT))) },
+            { operatorSymbol(Operator.IN), BinaryHandler((left, right) => new In(left, right, operatorSymbol(Operator.IN))) },
+            { operatorSymbol(Operator.NOTIN), BinaryHandler((left, right) => new NotIn(left, right, operatorSymbol(Operator.NOTIN))) },
+            { operatorSymbol(Operator.OVERLAP), BinaryHandler((left, right) => new Overlap(left, right, operatorSymbol(Operator.OVERLAP))) },
+            { operatorSymbol(Operator.PREFIX), BinaryHandler((left, right) => new Prefix(left, right, operatorSymbol(Operator.PREFIX))) },
+            { operatorSymbol(Operator.SUFFIX), BinaryHandler((left, right) => new Suffix(left, right, operatorSymbol(Operator.SUFFIX))) },
         };
-        this.escapedOperators = new HashSet<string>(this.operatorMapping.Values);
+        escapedOperators = new HashSet<string>(this.operatorMapping.Values);
 }
 
     public IEvaluable Parse(object? input)
@@ -150,13 +148,13 @@ public class Parser {
     private Func<IEvaluable[], IEvaluable> MultiaryHandler(Func<IEvaluable[], IEvaluable> handler) =>
         (IEvaluable[] operands) => handler(operands);
 
-    private bool IsEspaced(string value) =>
+    public bool IsEspaced(string value) =>
         value.StartsWith(escapeCharacter);
 
-    private string? ToReferenceAddress(object? reference) =>
+    public string? ToReferenceAddress(object? reference) =>
         reference is string ? serializeOptions.From((string)reference) : null;
 
-    private IEvaluable CreateOperand(object? value)
+    public IEvaluable CreateOperand(object? value)
     {
         if (value is IEnumerable<object>) {
             if (((IEnumerable<object>)value).Count() == 0) {
@@ -182,7 +180,7 @@ public class Parser {
         return new Value(value);
     }
 
-    private IEvaluable CreateExpression(object[] expression)
+    public IEvaluable CreateExpression(object[] expression)
     {
         var op = expression[0];
         var operands = expression.Skip(1).ToArray();
@@ -191,17 +189,10 @@ public class Parser {
             throw new UnexpectedExpressionException($"expression must have a valid operator, got {op}");
         }
 
-        Operator opKey;
-        try {
-            opKey = (Operator)Enum.Parse(typeof(Operator), (string)op);
-        } catch {
-            throw new UnexpectedExpressionException($"expression got unsupported opereator, got {op}");
-        }
-
-        if (!operatorHandlerMapping.ContainsKey(opKey)) {
+        if (!operatorHandlerMapping.ContainsKey((string)op)) {
             throw new UnexpectedExpressionException($"missing expression handler for {op}");
         }
 
-        return operatorHandlerMapping[opKey]((from operand in operands select Parse(operand)).ToArray());
+        return operatorHandlerMapping[(string)op]((from operand in operands select Parse(operand)).ToArray());
     }
 }
