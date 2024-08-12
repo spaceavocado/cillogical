@@ -65,6 +65,7 @@ public class NorTest
             new IEvaluable[] { new Reference("Missing"), new Reference("Missing") },
             new Nor(new IEvaluable[] { new Reference("Missing"), new Reference("Missing") })
         };
+        yield return new object[] { new IEvaluable[] { new Value(false), new Value("invalid") }, new Not(new Value("invalid")) };
     }
 
     [Theory]
@@ -72,7 +73,7 @@ public class NorTest
     public void Simplify(IEvaluable[] operands, object expected)
     {
         var expression = new Nor(operands);
-        var simplified = expression.Simplify(new Dictionary<string, object> { { "RefA", true } });
+        var simplified = expression.Simplify(new Dictionary<string, object?> { { "RefA", true }, { "invalid", 1 } });
 
         if (expected is IEvaluable) {
             Assert.Equal($"{expected}", $"{simplified}");
@@ -80,20 +81,5 @@ public class NorTest
             Assert.Equal(expected, simplified);
         }
         
-    }
-
-    public static IEnumerable<object[]> SimplifyInvalidOperandTestData()
-    {
-        yield return new object[] { new IEvaluable[] { new Value(1), new Value(true) } };
-        yield return new object[] { new IEvaluable[] { new Value(1), new Value("bogus") } };
-    }
-
-    [Theory]
-    [MemberData(nameof(SimplifyInvalidOperandTestData))]
-    public void SimplifyInvalidOperand(IEvaluable[] operands)
-    {
-        var expression = new Nor(operands);
-
-        Assert.Throws<InvalidExpressionException>(() => expression.Simplify(null));
     }
 }

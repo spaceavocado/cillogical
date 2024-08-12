@@ -7,11 +7,11 @@ namespace Cillogical.UnitTests.Kernel.Expression.Logical;
 public class LogicalExpressionMock : LogicalExpression
 {
     public LogicalExpressionMock(IEvaluable[] operands, string symbol) : base(symbol, symbol, operands) { }
-    public override object Evaluate(Dictionary<string, object>? context)
+    public override object Evaluate(Dictionary<string, object?>? context)
     {
         throw new NotImplementedException();
     }
-    public override object Simplify(Dictionary<string, object>? context)
+    public override object Simplify(Dictionary<string, object?>? context)
     {
         throw new NotImplementedException();
     }

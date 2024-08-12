@@ -1,6 +1,4 @@
 ﻿namespace Cillogical.Kernel.Operand;
-using Cillogical.Kernel;
-using System.Linq;
 
 public class Collection : IEvaluable
 {
@@ -20,8 +18,10 @@ public class Collection : IEvaluable
         this.escapedOperators = escapedOperators ?? new HashSet<string>();
     }
 
-    public object Evaluate(Dictionary<string, object>? context = null) =>
-        items.Select((item) => item.Evaluate(context)).ToArray();
+    public object Evaluate(Dictionary<string, object?>? context = null) {
+        context = ContextUtils.FlattenContext(context);    
+        return items.Select((item) => item.Evaluate(context)).ToArray();
+    }
 
     public object Serialize() {
         var head = items[0].Serialize();
@@ -32,7 +32,9 @@ public class Collection : IEvaluable
         return new object[] { head }.Concat(items.Skip(1).Select((item) => item.Serialize())).ToArray();
     }
 
-    public object Simplify(Dictionary<string, object>? context = null) {
+    public object Simplify(Dictionary<string, object?>? context = null) {
+        context = ContextUtils.FlattenContext(context);
+
         var res = new object?[] { };
         foreach (var item in items) {
             var val = item.Simplify(context);

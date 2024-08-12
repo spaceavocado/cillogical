@@ -19,13 +19,13 @@ public class SimplifyOptions : ISimplifyOptions
 
 public class ReferenceTest
 {
-    private Dictionary<string, object> EXAMPLE_CONTEXT() {
+    private Dictionary<string, object?>? EXAMPLE_CONTEXT() {
         return ContextUtils.FlattenContext(
-            new Dictionary<string, object> {
+            new Dictionary<string, object?> {
                 { "refA", 1 },
                 {
                     "refB",
-                    new Dictionary<string, object> {
+                    new Dictionary<string, object?> {
                         {"refB1", 2 },
                         { "refB2", "refB1" },
                         { "refB3", true },
@@ -37,6 +37,7 @@ public class ReferenceTest
                 {"refF", "A"},
                 {"refG", "1"},
                 {"refH", "1.1"},
+                {"refX", null},
             }
         );
     }
@@ -98,24 +99,26 @@ public class ReferenceTest
     }
 
     [Theory]
-    [InlineData("UNDEFINED", "UNDEFINED", null)]
-    [InlineData("refA", "refA", 1)]
-    [InlineData("refB.refB1", "refB.refB1", 2)]
-    [InlineData("refB.{refC}", "refB.refB1", 2)]
-    [InlineData("refB.{UNDEFINED}", "refB.{UNDEFINED}", null)]
-    [InlineData("refB.{refB.refB2}", "refB.refB1", 2)]
-    [InlineData("refB.{refB.{refD}}", "refB.refB1", 2)]
-    [InlineData("refE[0]", "refE[0]", 1)]
-    [InlineData("refE[2]", "refE[2]", null)]
-    [InlineData("refE[1][0]", "refE[1][0]", 2)]
-    [InlineData("refE[1][3]", "refE[1][3]", null)]
-    [InlineData("refE[{refA}][0]", "refE[1][0]", 2)]
-    [InlineData("refE[{refA}][{refB.refB1}]", "refE[1][2]", 4)]
-    [InlineData("ref{refF}", "refA", 1)]
-    [InlineData("ref{UNDEFINED}", "ref{UNDEFINED}", null)]
-    public void ContextLookup(string path, string? expectedPath, object? expectedValue)
+    [InlineData("UNDEFINED", false, "UNDEFINED", null)]
+    [InlineData("refA", true, "refA", 1)]
+    [InlineData("refB.refB1", true, "refB.refB1", 2)]
+    [InlineData("refB.{refC}", true, "refB.refB1", 2)]
+    [InlineData("refB.{UNDEFINED}", false, "refB.{UNDEFINED}", null)]
+    [InlineData("refB.{refB.refB2}", true, "refB.refB1", 2)]
+    [InlineData("refB.{refB.{refD}}", true, "refB.refB1", 2)]
+    [InlineData("refE[0]", true, "refE[0]", 1)]
+    [InlineData("refE[2]", false, "refE[2]", null)]
+    [InlineData("refE[1][0]", true, "refE[1][0]", 2)]
+    [InlineData("refE[1][3]", false, "refE[1][3]", null)]
+    [InlineData("refE[{refA}][0]", true, "refE[1][0]", 2)]
+    [InlineData("refE[{refA}][{refB.refB1}]", true, "refE[1][2]", 4)]
+    [InlineData("ref{refF}", true, "refA", 1)]
+    [InlineData("ref{UNDEFINED}", false, "ref{UNDEFINED}", null)]
+    [InlineData("refX", true, "refX", null)]
+    public void ContextLookup(string path, bool expectedFound, string? expectedPath, object? expectedValue)
     {
-        var (resolvedPath, value) = Reference.ContextLookup(EXAMPLE_CONTEXT(), path);
+        var (found, resolvedPath, value) = Reference.ContextLookup(EXAMPLE_CONTEXT(), path);
+        Assert.Equal(expectedFound, found);
         Assert.Equal(expectedPath, resolvedPath);
         Assert.Equal(expectedValue, value);
     }
@@ -131,7 +134,7 @@ public class ReferenceTest
     [InlineData("refJ", DataType.Undefined, null)]
     public void Evaluate(string path, DataType dataType, object expected)
     {
-        var (_, value) = Reference.Evaluate(EXAMPLE_CONTEXT(), path, dataType);
+        var (_, _, value) = Reference.Evaluate(EXAMPLE_CONTEXT(), path, dataType);
         Assert.Equal(expected, value);
     }
 
@@ -156,18 +159,17 @@ public class ReferenceTest
 
     public static IEnumerable<object?[]> SimplifyTestData()
     {
-        yield return new object[] { "refJ", new Reference("refJ") };
-        yield return new object?[] { "ignored", null };
-        yield return new object?[] { "refA", 1 };
-        yield return new object[] { "refB.{refJ}", new Reference("refB.{refJ}") };
-        yield return new object?[] { "refC.{refJ}", null };
+        yield return new object[] { "refA", 1 };
+        yield return new object?[] { "ignored", new Reference("ignored") };
+        yield return new object?[] { "refB.refB1", new Reference("refB.refB1") };
+        yield return new object?[] { "ref", new Reference("ref") };
     }
 
     [Theory]
     [MemberData(nameof(SimplifyTestData))]
     public void Simplify(string address, object? expected)
     {
-        var simplifyOptions = new SimplifyOptions(new string[] { "ignored" }, new Regex[] { new Regex(@"^refC") });
+        var simplifyOptions = new SimplifyOptions(new string[] { "ignored" }, new Regex[] { new Regex(@"^refB") });
         var operand = new Reference(address, simplifyOptions: simplifyOptions);
         var simplified = operand.Simplify(EXAMPLE_CONTEXT());
 

@@ -1,6 +1,4 @@
 namespace Cillogical.Kernel.Expression.Comparison;
-using Cillogical.Kernel;
-using System.Linq;
 
 public delegate bool Comparison(params object?[] operands);
 
@@ -18,8 +16,10 @@ public abstract class ComparisonExpression : IEvaluable
         this.operands = operands;
     }
 
-    public object Evaluate(Dictionary<string, object>? context)
+    public object Evaluate(Dictionary<string, object?>? context)
     {
+        context = ContextUtils.FlattenContext(context);
+
         try {
             return comparison((from operand in operands select operand.Evaluate(context)).ToArray());
         }
@@ -32,8 +32,10 @@ public abstract class ComparisonExpression : IEvaluable
         new object[] { symbol }.Concat(operands.Select((operand) => operand.Serialize()));
 
 
-    public object Simplify(Dictionary<string, object>? context)
+    public object Simplify(Dictionary<string, object?>? context)
     {
+        context = ContextUtils.FlattenContext(context);
+
         var res = new object?[] { };
         foreach (var operand in operands) {
             var val = operand.Simplify(context);

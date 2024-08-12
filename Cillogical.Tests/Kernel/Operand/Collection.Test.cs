@@ -49,7 +49,7 @@ public class CollectionTest
     public void Evaluate(IEvaluable[] items, object[] expected)
     {
         var collection = new Collection(items);
-        Assert.Equal(expected, collection.Evaluate(new Dictionary<string, object> { { "RefA", "A" } }));
+        Assert.Equal(expected, collection.Evaluate(new Dictionary<string, object?> { { "RefA", "A" } }));
     }
 
     public static IEnumerable<object[]> SerializeTestData()
@@ -95,7 +95,7 @@ public class CollectionTest
     public void Simplify(IEvaluable[] items, object expected)
     {
         var collection = new Collection(items);
-        var simplified = collection.Simplify(new Dictionary<string, object> { { "RefA", "A" } });
+        var simplified = collection.Simplify(new Dictionary<string, object?> { { "RefA", "A" } });
 
         if (simplified is IEvaluable) {
             Assert.Equal($"{expected}", $"{simplified}");

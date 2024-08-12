@@ -1,8 +1,6 @@
-﻿namespace Cillogical.Kernel.Operand;
-using Cillogical.Kernel;
-using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
+namespace Cillogical.Kernel.Operand;
 
 public enum DataType
 {
@@ -28,15 +26,12 @@ public interface ISimplifyOptions {
 
 public class DefaultSerializeOptions : ISerializeOptions
 {
-    public string? From(string operand) {
-        if (operand.Length > 1 && operand.StartsWith("$"))
-        {
-            return operand.Substring(1);
-        }
+    public string? From(string operand) =>
+        operand.Length > 1 && operand.StartsWith("$")
+            ? operand.Substring(1)
+            : null;
 
-        return null;
-    }
-    public string To(string operand) { return $"${operand}"; }
+    public string To(string operand) => $"${operand}";
 }
 
 public class Reference : IEvaluable
@@ -71,14 +66,14 @@ public class Reference : IEvaluable
         this.simplifyOptions = simplifyOptions;
     }
 
-    public object? Evaluate(Dictionary<string, object>? context = null)
+    public object? Evaluate(Dictionary<string, object?>? context = null)
     {
         if (context == null) {
             return null;
         }
 
         context = ContextUtils.FlattenContext(context);
-        var (_, value) = Evaluate(context, path, dataType);
+        var (_, _, value) = Evaluate(context, path, dataType);
 
         return value;
     }
@@ -89,15 +84,15 @@ public class Reference : IEvaluable
             : path
         );
 
-    public object? Simplify(Dictionary<string, object>? context = null) {
+    public object? Simplify(Dictionary<string, object?>? context = null) {
         if (context == null) {
             return this;
         }
 
         context = ContextUtils.FlattenContext(context);
-        var (resolvedPath, value) = Evaluate(context, path, dataType);
+        var (found, resolvedPath, value) = Evaluate(context, path, dataType);
 
-        if (value != null || IsIgnoredPath(path, simplifyOptions?.IgnoredPaths, simplifyOptions?.IgnoredPathsRx)) {
+        if (found && !IsIgnoredPath(path, simplifyOptions?.IgnoredPaths, simplifyOptions?.IgnoredPathsRx)) {
             return value;
         }
 
@@ -133,16 +128,12 @@ public class Reference : IEvaluable
         return re.Replace(path, "");
     }
 
-    public static (string, object?) Evaluate(Dictionary<string, object> context, string path, DataType dataType)
+    public static (bool, string, object?) Evaluate(Dictionary<string, object?>? context, string path, DataType dataType)
     {
         context = ContextUtils.FlattenContext(context);
-        var (resolvedPath, value) = ContextLookup(context, path);
+        var (found, resolvedPath, value) = ContextLookup(context, path);
 
-        if (value == null) {
-            return (resolvedPath, null);
-        }
-
-        value = dataType switch
+        value = value is not null ? dataType switch
         {
             DataType.Number => ToNumber(value),
             DataType.Integer => ToInteger(value),
@@ -150,21 +141,25 @@ public class Reference : IEvaluable
             DataType.Boolean => ToBoolean(value),
             DataType.String => ToString(value),
             _ => value,
-        };
+        } : null;
 
-        return (resolvedPath, value);
+        return (found, resolvedPath, value);
     }
 
-    public static (string, object?) ContextLookup(Dictionary<string, object> flattenContext, string path)
+    public static (bool, string, object?) ContextLookup(Dictionary<string, object?>? flattenContext, string path)
     {
+        if (flattenContext is null) {
+            return (false, path, null);
+        }
+
         var re = new Regex(NESTED_REFERENCE_RX);
 
         var match = re.Match(path);
         while (match.Success)
         {
-            var (_, val) = ContextLookup(flattenContext, match.Groups[1].Value);
-            if (val == null) {
-                return (path, null);
+            var (found, _, val) = ContextLookup(flattenContext, match.Groups[1].Value);
+            if (!found) {
+                return (false, path, null);
             }
 
             path = path.Substring(0, match.Index) + val + path.Substring(match.Index + match.Length);
@@ -172,10 +167,10 @@ public class Reference : IEvaluable
         }
 
         if (flattenContext.ContainsKey(path)) {
-            return (path, flattenContext[path]);
+            return (true, path, flattenContext[path]);
         }
 
-        return (path, null);
+        return (false, path, null);
     }
 
     public static bool IsIgnoredPath(string path, string[]? ignoredPaths = null, Regex[]? ignoredPathsRx = null)

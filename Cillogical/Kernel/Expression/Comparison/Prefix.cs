@@ -1,6 +1,4 @@
 ﻿namespace Cillogical.Kernel.Expression.Comparison;
-using Cillogical.Kernel;
-
 public class Prefix : ComparisonExpression
 {
     public Prefix(IEvaluable left, IEvaluable right, string symbol = "PREFIX") :

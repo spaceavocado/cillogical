@@ -1,6 +1,4 @@
 ﻿namespace Cillogical.Kernel.Expression.Logical;
-using Cillogical.Kernel;
-
 public class Nor : LogicalExpression
 {
     private string notSymbol;
@@ -14,8 +12,10 @@ public class Nor : LogicalExpression
         this.notSymbol = notSymbol;
     }
 
-    public override object Evaluate(Dictionary<string, object>? context)
+    public override object Evaluate(Dictionary<string, object?>? context)
     {
+        context = ContextUtils.FlattenContext(context);
+
         foreach (var operand in operands) {
             var res = operand.Evaluate(context);
             if (res is not bool) {
@@ -28,9 +28,11 @@ public class Nor : LogicalExpression
         return true;
     }
 
-    public override object Simplify(Dictionary<string, object>? context)
+    public override object Simplify(Dictionary<string, object?>? context)
     {
+        context = ContextUtils.FlattenContext(context);
         var simplified = new IEvaluable[] { };
+
         foreach (var operand in operands)
         {
             var res = operand.Simplify(context);
@@ -39,12 +41,10 @@ public class Nor : LogicalExpression
                     return false;
                 }
                 continue;
-            } else if (res is not IEvaluable) {
-                throw new InvalidExpressionException($"invalid simplified operand \"{res}\" ({operand}) in NOR expression, must be boolean value");
             }
 
             Array.Resize(ref simplified, simplified.Length + 1);
-            simplified[simplified.Length - 1] = (IEvaluable)res;
+            simplified[simplified.Length - 1] = res is IEvaluable ? (IEvaluable)res : operand;
         }
 
         if (simplified.Length == 0) {

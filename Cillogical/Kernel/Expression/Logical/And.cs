@@ -1,5 +1,4 @@
 ﻿namespace Cillogical.Kernel.Expression.Logical;
-using Cillogical.Kernel;
 
 public class And : LogicalExpression
 {
@@ -10,8 +9,10 @@ public class And : LogicalExpression
         }
     }
 
-    public override object Evaluate(Dictionary<string, object>? context)
+    public override object Evaluate(Dictionary<string, object?>? context)
     {
+        context = ContextUtils.FlattenContext(context);
+
         foreach (var operand in operands) {
             var res = operand.Evaluate(context);
             if (res is not bool) {
@@ -25,9 +26,11 @@ public class And : LogicalExpression
     }
 
 
-    public override object Simplify(Dictionary<string, object>? context)
+    public override object Simplify(Dictionary<string, object?>? context)
     {
+        context = ContextUtils.FlattenContext(context);
         var simplified = new IEvaluable[] { };
+
         foreach (var operand in operands)
         {
             var res = operand.Simplify(context);
@@ -36,12 +39,10 @@ public class And : LogicalExpression
                     return false;
                 }
                 continue;
-            } else if (res is not IEvaluable) {
-                throw new InvalidExpressionException($"invalid simplified operand \"{res}\" ({operand}) in AND expression, must be boolean value");
             }
 
             Array.Resize(ref simplified, simplified.Length + 1);
-            simplified[simplified.Length - 1] = (IEvaluable)res;
+            simplified[simplified.Length - 1] = res is IEvaluable ? (IEvaluable)res : operand;
         }
 
         if (simplified.Length == 0) {
