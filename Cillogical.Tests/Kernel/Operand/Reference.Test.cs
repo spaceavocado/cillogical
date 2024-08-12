@@ -156,18 +156,16 @@ public class ReferenceTest
 
     public static IEnumerable<object?[]> SimplifyTestData()
     {
-        yield return new object[] { "refJ", new Reference("refJ") };
-        yield return new object?[] { "ignored", null };
-        yield return new object?[] { "refA", 1 };
-        yield return new object[] { "refB.{refJ}", new Reference("refB.{refJ}") };
-        yield return new object?[] { "refC.{refJ}", null };
+        yield return new object[] { "refA", 1 };
+        yield return new object?[] { "ignored", new Reference("ignored") };
+        yield return new object?[] { "refB.refB1", new Reference("refB.refB1") };
     }
 
     [Theory]
     [MemberData(nameof(SimplifyTestData))]
     public void Simplify(string address, object? expected)
     {
-        var simplifyOptions = new SimplifyOptions(new string[] { "ignored" }, new Regex[] { new Regex(@"^refC") });
+        var simplifyOptions = new SimplifyOptions(new string[] { "ignored" }, new Regex[] { new Regex(@"^refB") });
         var operand = new Reference(address, simplifyOptions: simplifyOptions);
         var simplified = operand.Simplify(EXAMPLE_CONTEXT());
 

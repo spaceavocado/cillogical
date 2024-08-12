@@ -26,15 +26,12 @@ public interface ISimplifyOptions {
 
 public class DefaultSerializeOptions : ISerializeOptions
 {
-    public string? From(string operand) {
-        if (operand.Length > 1 && operand.StartsWith("$"))
-        {
-            return operand.Substring(1);
-        }
+    public string? From(string operand) =>
+        operand.Length > 1 && operand.StartsWith("$")
+            ? operand.Substring(1)
+            : null;
 
-        return null;
-    }
-    public string To(string operand) { return $"${operand}"; }
+    public string To(string operand) => $"${operand}";
 }
 
 public class Reference : IEvaluable
@@ -95,7 +92,7 @@ public class Reference : IEvaluable
         context = ContextUtils.FlattenContext(context);
         var (resolvedPath, value) = Evaluate(context, path, dataType);
 
-        if (value != null || IsIgnoredPath(path, simplifyOptions?.IgnoredPaths, simplifyOptions?.IgnoredPathsRx)) {
+        if (!IsIgnoredPath(path, simplifyOptions?.IgnoredPaths, simplifyOptions?.IgnoredPathsRx)) {
             return value;
         }
 

@@ -79,7 +79,7 @@ public class Parser {
         ISimplifyOptions? simplifyOptions = null,
         char? escapeCharacter = null
     ) {
-        this.serializeOptions = this.serializeOptions ?? new DefaultSerializeOptions();
+        this.serializeOptions = serializeOptions ?? new DefaultSerializeOptions();
         this.simplifyOptions = simplifyOptions;
         this.escapeCharacter = escapeCharacter ?? DEFAULT_ESCAPE_CHARACTER;
         this.operatorMapping = operatorMapping ?? DEFAULT_OPERATOR_MAPPING;
