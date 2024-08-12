@@ -16,7 +16,7 @@ public abstract class ComparisonExpression : IEvaluable
         this.operands = operands;
     }
 
-    public object Evaluate(Dictionary<string, object>? context)
+    public object Evaluate(Dictionary<string, object?>? context)
     {
         context = ContextUtils.FlattenContext(context);
 
@@ -32,7 +32,7 @@ public abstract class ComparisonExpression : IEvaluable
         new object[] { symbol }.Concat(operands.Select((operand) => operand.Serialize()));
 
 
-    public object Simplify(Dictionary<string, object>? context)
+    public object Simplify(Dictionary<string, object?>? context)
     {
         context = ContextUtils.FlattenContext(context);
 

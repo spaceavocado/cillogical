@@ -1,9 +1,9 @@
 namespace Cillogical.Kernel;
 
 public interface IEvaluable {
-    object? Evaluate(Dictionary<string, object>? context);
+    object? Evaluate(Dictionary<string, object?>? context);
     object? Serialize();
-    object? Simplify(Dictionary<string, object>? context);
+    object? Simplify(Dictionary<string, object?>? context);
     string ToString();
 }
 
@@ -26,18 +26,18 @@ public static class Primitive
 
 public static class ContextUtils
 {
-    public static Dictionary<string, object>? FlattenContext(Dictionary<string, object>? context) {
+    public static Dictionary<string, object?>? FlattenContext(Dictionary<string, object?>? context) {
         if (context == null) {
             return null;
         }
-        if (context is FlattenContext<string, object>) {
+        if (context is FlattenContext<string, object?>) {
             return context;
         }
 
-        var res = new FlattenContext<string, object>();
+        var res = new FlattenContext<string, object?>();
 
-        Action<object, string>? lookup = null;
-        lookup = (object value, string path) =>
+        Action<object?, string>? lookup = null;
+        lookup = (object? value, string path) =>
         {
             switch (value)
             {
@@ -48,9 +48,10 @@ public static class ContextUtils
                 case string:
                 case char:
                 case bool:
+                case null:
                     res[path] = value;
                     break;
-                case Dictionary<string, object> dict:
+                case Dictionary<string, object?> dict:
                     foreach (var entry in dict)
                     {
                         lookup?.Invoke(entry.Value, JoinPath(path, entry.Key));

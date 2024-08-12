@@ -62,6 +62,7 @@ public class OrTest
             new IEvaluable[] { new Reference("Missing"), new Reference("Missing") },
             new Or(new IEvaluable[] { new Reference("Missing"), new Reference("Missing") })
         };
+        yield return new object[] { new IEvaluable[] { new Value(false), new Value("invalid"), new Value(false) }, new Value("invalid") };
     }
 
     [Theory]
@@ -69,7 +70,7 @@ public class OrTest
     public void Simplify(IEvaluable[] operands, object expected)
     {
         var expression = new Or(operands);
-        var simplified = expression.Simplify(new Dictionary<string, object> { { "RefA", true } });
+        var simplified = expression.Simplify(new Dictionary<string, object?> { { "RefA", true }, { "invalid", 1 } });
 
         if (expected is IEvaluable) {
             Assert.Equal($"{expected}", $"{simplified}");
@@ -77,20 +78,5 @@ public class OrTest
             Assert.Equal(expected, simplified);
         }
         
-    }
-
-    public static IEnumerable<object[]> SimplifyInvalidOperandTestData()
-    {
-        yield return new object[] { new IEvaluable[] { new Value(1), new Value(true) } };
-        yield return new object[] { new IEvaluable[] { new Value(1), new Value("bogus") } };
-    }
-
-    [Theory]
-    [MemberData(nameof(SimplifyInvalidOperandTestData))]
-    public void SimplifyInvalidOperand(IEvaluable[] operands)
-    {
-        var expression = new Or(operands);
-
-        Assert.Throws<InvalidExpressionException>(() => expression.Simplify(null));
     }
 }

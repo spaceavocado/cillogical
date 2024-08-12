@@ -9,7 +9,7 @@ public class Or : LogicalExpression
         }
     }
 
-    public override object Evaluate(Dictionary<string, object>? context)
+    public override object Evaluate(Dictionary<string, object?>? context)
     {
         context = ContextUtils.FlattenContext(context);
 
@@ -26,7 +26,7 @@ public class Or : LogicalExpression
     }
 
 
-    public override object Simplify(Dictionary<string, object>? context)
+    public override object Simplify(Dictionary<string, object?>? context)
     {
         context = ContextUtils.FlattenContext(context);
         var simplified = new IEvaluable[] { };
@@ -39,12 +39,10 @@ public class Or : LogicalExpression
                     return true;
                 }
                 continue;
-            } else if (res is not IEvaluable) {
-                throw new InvalidExpressionException($"invalid simplified operand \"{res}\" ({operand}) in OR expression, must be boolean value");
             }
 
             Array.Resize(ref simplified, simplified.Length + 1);
-            simplified[simplified.Length - 1] = (IEvaluable)res;
+            simplified[simplified.Length - 1] = res is IEvaluable ? (IEvaluable)res : operand;
         }
 
         if (simplified.Length == 0) {

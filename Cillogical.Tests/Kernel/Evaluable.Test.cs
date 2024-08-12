@@ -30,35 +30,35 @@ public class EvalualeTest
         };
 
         yield return new object[] {
-            new Dictionary<string, object> { { "a", 1 } },
-            new Dictionary<string, object> { { "a", 1 } }
+            new Dictionary<string, object?> { { "a", 1 } },
+            new Dictionary<string, object?> { { "a", 1 } }
         };
 
         yield return new object[] {
-            new Dictionary<string, object> {
+            new Dictionary<string, object?> {
                 { "a", 1 },
-                { "b", new Dictionary<string, object> {
+                { "b", new Dictionary<string, object?> {
                     { "c", 5 },
                     { "d", true }
                 }}
             },
-            new Dictionary<string, object> { { "a", 1 }, { "b.c", 5 }, { "b.d", true } }
+            new Dictionary<string, object?> { { "a", 1 }, { "b.c", 5 }, { "b.d", true } }
         };
 
         yield return new object[] {
-            new Dictionary<string, object> {
+            new Dictionary<string, object?> {
                 { "a", 1 },
                 { "b", new object[] { 1, "val", true }
             }},
-            new Dictionary<string, object> { { "a", 1 }, { "b[0]", 1 }, { "b[1]", "val" }, { "b[2]", true } }
+            new Dictionary<string, object?> { { "a", 1 }, { "b[0]", 1 }, { "b[1]", "val" }, { "b[2]", true } }
         };
 
         yield return new object[] {
-            new Dictionary<string, object> {
+            new Dictionary<string, object?> {
                 { "a", 1 },
                 { "b", new object[] {
                     1.1,
-                    new Dictionary<string, object>
+                    new Dictionary<string, object?>
                     {
                         { "c", false },
                         { "d", 1.2f }
@@ -66,13 +66,13 @@ public class EvalualeTest
                     'c' 
                 }}
             },
-            new Dictionary<string, object> { { "a", 1 }, { "b[0]", 1.1 }, { "b[1].c", false }, { "b[1].d", 1.2f }, { "b[2]", 'c' } }
+            new Dictionary<string, object?> { { "a", 1 }, { "b[0]", 1.1 }, { "b[1].c", false }, { "b[1].d", 1.2f }, { "b[2]", 'c' } }
         };
     }
 
     [Theory]
     [MemberData(nameof(FlattenContextData))]
-    public void FlattenContext(Dictionary<string, object>? input, Dictionary<string, object>? expected)
+    public void FlattenContext(Dictionary<string, object?>? input, Dictionary<string, object?>? expected)
     {
         Assert.Equal(expected, ContextUtils.FlattenContext(input));
     }

@@ -13,9 +13,9 @@ class ComparisionMock : ComparisonExpression
 
 class RogueOperand : IEvaluable
 {
-    public object? Evaluate(Dictionary<string, object>? context) => throw new Exception();
+    public object? Evaluate(Dictionary<string, object?>? context) => throw new Exception();
     public object? Serialize() => throw new Exception();
-    public object? Simplify(Dictionary<string, object>? context) => throw new Exception();
+    public object? Simplify(Dictionary<string, object?>? context) => throw new Exception();
     public override string ToString() => throw new Exception();
 }
 
@@ -89,7 +89,7 @@ public class ComparisionTest
     public void Simplify(IEvaluable left, IEvaluable right, object expected)
     {
         var expression = new ComparisionMock("==", left, right);
-        var simplified = expression.Simplify(new Dictionary<string, object> { { "RefA", "A"} });
+        var simplified = expression.Simplify(new Dictionary<string, object?> { { "RefA", "A"} });
 
         if (simplified is IEvaluable) {
             Assert.Equal($"{expected}", $"{simplified}");

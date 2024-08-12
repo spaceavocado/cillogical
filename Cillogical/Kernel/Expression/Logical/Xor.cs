@@ -15,7 +15,7 @@ public class Xor : LogicalExpression
         this.norSymbol = norSymbol;
     }
 
-    public override object Evaluate(Dictionary<string, object>? context)
+    public override object Evaluate(Dictionary<string, object?>? context)
     {
         context = ContextUtils.FlattenContext(context);
         bool? xor = null;
@@ -42,7 +42,7 @@ public class Xor : LogicalExpression
     }
 
 
-    public override object Simplify(Dictionary<string, object>? context)
+    public override object Simplify(Dictionary<string, object?>? context)
     {
         context = ContextUtils.FlattenContext(context);
         var truthy = 0;
@@ -59,12 +59,10 @@ public class Xor : LogicalExpression
                     return false;
                 }
                 continue;
-            } else if (res is not IEvaluable) {
-                throw new InvalidExpressionException($"invalid simplified operand \"{res}\" ({operand}) in XOR expression, must be boolean value");
             }
 
             Array.Resize(ref simplified, simplified.Length + 1);
-            simplified[simplified.Length - 1] = (IEvaluable)res;
+            simplified[simplified.Length - 1] = res is IEvaluable ? (IEvaluable)res : operand;
         }
 
         if (simplified.Length == 0) {

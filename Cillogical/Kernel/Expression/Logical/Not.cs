@@ -4,7 +4,7 @@ public class Not : LogicalExpression
 {
     public Not(IEvaluable operand, string symbol = "NOT") : base("NOT", symbol, operand) { }
 
-    public override object Evaluate(Dictionary<string, object>? context)
+    public override object Evaluate(Dictionary<string, object?>? context)
     {
         context = ContextUtils.FlattenContext(context);
 
@@ -17,15 +17,13 @@ public class Not : LogicalExpression
     }
 
 
-    public override object Simplify(Dictionary<string, object>? context)
+    public override object Simplify(Dictionary<string, object?>? context)
     {
         context = ContextUtils.FlattenContext(context);
         var res = operands[0].Simplify(context);
 
         if (res is bool) {
             return !(bool)res;
-        } else if (res is not IEvaluable) {
-            throw new InvalidExpressionException($"invalid simplified operand \"{res}\" ({operands[0]}) in NOT expression, must be boolean value");
         }
 
         return this;

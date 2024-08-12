@@ -17,13 +17,13 @@ public abstract class LogicalExpression : IEvaluable
         this.operands = operands;
     }
 
-    public abstract object Evaluate(Dictionary<string, object>? context);
+    public abstract object Evaluate(Dictionary<string, object?>? context);
 
     public object Serialize() =>
         new object[] { symbol }.Concat(operands.Select((operand) => operand.Serialize()));
 
 
-    public abstract object Simplify(Dictionary<string, object>? context);
+    public abstract object Simplify(Dictionary<string, object?>? context);
 
     public override string ToString()
     {

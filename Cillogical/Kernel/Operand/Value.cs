@@ -12,11 +12,11 @@ public class Value : IEvaluable
         this.value = value;
     }
 
-    public object? Evaluate(Dictionary<string, object>? context = null) => value;
+    public object? Evaluate(Dictionary<string, object?>? context = null) => value;
 
     public object? Serialize() => value;
 
-    public object? Simplify(Dictionary<string, object>? context = null) => value;
+    public object? Simplify(Dictionary<string, object?>? context = null) => value;
 
     public override string ToString() =>
         this.value switch

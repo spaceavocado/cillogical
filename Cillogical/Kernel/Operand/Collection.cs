@@ -18,7 +18,7 @@ public class Collection : IEvaluable
         this.escapedOperators = escapedOperators ?? new HashSet<string>();
     }
 
-    public object Evaluate(Dictionary<string, object>? context = null) {
+    public object Evaluate(Dictionary<string, object?>? context = null) {
         context = ContextUtils.FlattenContext(context);    
         return items.Select((item) => item.Evaluate(context)).ToArray();
     }
@@ -32,7 +32,7 @@ public class Collection : IEvaluable
         return new object[] { head }.Concat(items.Skip(1).Select((item) => item.Serialize())).ToArray();
     }
 
-    public object Simplify(Dictionary<string, object>? context = null) {
+    public object Simplify(Dictionary<string, object?>? context = null) {
         context = ContextUtils.FlattenContext(context);
 
         var res = new object?[] { };

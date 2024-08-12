@@ -42,6 +42,7 @@ public class NotTest
         yield return new object[] { new Value(true), false };
         yield return new object[] { new Reference("RefA"), false };
         yield return new object[] { new Reference("Missing"), new Not(new Reference("Missing")) };
+        yield return new object[] { new Reference("invalid"), new Not(new Reference("invalid")) };
     }
 
     [Theory]
@@ -49,27 +50,12 @@ public class NotTest
     public void Simplify(IEvaluable operand, object expected)
     {
         var expression = new Not(operand);
-        var simplified = expression.Simplify(new Dictionary<string, object> { { "RefA", true } });
+        var simplified = expression.Simplify(new Dictionary<string, object?> { { "RefA", true }, { "invalid", 1 } });
 
         if (expected is IEvaluable) {
             Assert.Equal($"{expected}", $"{simplified}");
         } else {
             Assert.Equal(expected, simplified);
         } 
-    }
-
-    public static IEnumerable<object[]> SimplifyInvalidOperandTestData()
-    {
-        yield return new object[] { new Value(1) };
-        yield return new object[] {  new Value("bogus") };
-    }
-
-    [Theory]
-    [MemberData(nameof(SimplifyInvalidOperandTestData))]
-    public void SimplifyInvalidOperand(IEvaluable operand)
-    {
-        var expression = new Not(operand);
-
-        Assert.Throws<InvalidExpressionException>(() => expression.Simplify(null));
     }
 }
