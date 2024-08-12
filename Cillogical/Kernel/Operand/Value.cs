@@ -1,5 +1,4 @@
 ﻿namespace Cillogical.Kernel.Operand;
-using Cillogical.Kernel;
 
 public class Value : IEvaluable
 {

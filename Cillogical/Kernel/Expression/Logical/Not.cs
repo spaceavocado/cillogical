@@ -1,5 +1,4 @@
 ﻿namespace Cillogical.Kernel.Expression.Logical;
-using Cillogical.Kernel;
 
 public class Not : LogicalExpression
 {

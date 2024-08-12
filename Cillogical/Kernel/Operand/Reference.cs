@@ -1,8 +1,6 @@
-﻿namespace Cillogical.Kernel.Operand;
-using Cillogical.Kernel;
-using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
+namespace Cillogical.Kernel.Operand;
 
 public enum DataType
 {

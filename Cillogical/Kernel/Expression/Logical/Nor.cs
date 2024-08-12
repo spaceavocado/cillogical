@@ -1,6 +1,4 @@
 ﻿namespace Cillogical.Kernel.Expression.Logical;
-using Cillogical.Kernel;
-
 public class Nor : LogicalExpression
 {
     private string notSymbol;

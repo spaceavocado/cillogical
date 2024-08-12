@@ -1,6 +1,4 @@
 ﻿namespace Cillogical.Kernel.Operand;
-using Cillogical.Kernel;
-using System.Linq;
 
 public class Collection : IEvaluable
 {

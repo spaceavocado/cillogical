@@ -1,6 +1,4 @@
 ﻿namespace Cillogical.Kernel.Expression.Logical;
-using Cillogical.Kernel;
-using System.Linq;
 
 public class InvalidExpressionException : Exception {
     public InvalidExpressionException(string message) : base(message) { }

@@ -1,5 +1,4 @@
 namespace Cillogical.Kernel.Expression.Comparison;
-using Cillogical.Kernel;
 
 public class In : ComparisonExpression
 {

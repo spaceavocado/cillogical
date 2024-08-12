@@ -1,6 +1,4 @@
 namespace Cillogical.Kernel.Expression.Comparison;
-using Cillogical.Kernel;
-using System.Linq;
 
 public delegate bool Comparison(params object?[] operands);
 

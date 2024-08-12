@@ -1,6 +1,4 @@
 namespace Cillogical.Kernel.Expression.Comparison;
-using Cillogical.Kernel;
-
 public class Overlap : ComparisonExpression
 {
     public Overlap(IEvaluable left, IEvaluable right, string symbol = "OVERLAP") :
