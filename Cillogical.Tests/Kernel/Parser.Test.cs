@@ -110,7 +110,7 @@ public class ParserTest
         yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.LE], 1, 1 }, new Le(new Value(1), new Value(1)) };
         yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.IN], 1, 1 }, new In(new Value(1), new Value(1)) };
         yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.NOTIN], 1, 1 }, new NotIn(new Value(1), new Value(1)) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.NULL], 1 }, new Null(new Value(1)) };
+        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.NONE], 1 }, new Null(new Value(1)) };
         yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.PRESENT], 1 }, new Present(new Value(1)) };
         yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.PREFIX], 1, 1 }, new Prefix(new Value(1), new Value(1)) };
         yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.SUFFIX], 1, 1 }, new Suffix(new Value(1), new Value(1)) };
