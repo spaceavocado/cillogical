@@ -4,6 +4,30 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Illogical</Title>
+    <Authors>davidhorak</Authors>
+    <Company>Space Avocado</Company>
+    <Description>A micro conditional c# engine used to parse the raw logical and comparison expressions, evaluate the expression in the given data context, and provide access to a text form of the given expressions.</Description>
+    <PackageProjectUrl>https://github.com/spaceavocado/cillogical</PackageProjectUrl>
+    <Copyright>Copyright (c) 2024, David Horak (info@davidhorak.com)</Copyright>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/spaceavocado/cillogical</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>expression;logical;expression-evaluator</PackageTags>
+    <PackageLicenseFile>license.md</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\license.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\readme.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
