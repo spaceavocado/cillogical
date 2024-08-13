@@ -1,4 +1,4 @@
-# (c)illogical
+# (c#)illogical
 
 A micro conditional engine used to parse the logical and comparison expressions, evaluate an expression in data context, and provide access to a text form of the given expression.
 
@@ -13,12 +13,20 @@ Other implementations:
 
 This project has been developed to provide C// implementation of [spaceavocado/illogical](https://github.com/spaceavocado/illogical).
 
+## Getting Started
+You can install the **(c#)illogical** from [nuget](https://www.nuget.org/).
+
+```sh
+dotnet add package Cillogical --version 1.0.0
+```
+
 **Table of Content**
 
 ---
 
-- [(c)illogical](#cillogical)
+- [(c#)illogical](#cillogical)
   - [About](#about)
+  - [Getting Started](#getting-started)
 - [Basic Usage](#basic-usage)
   - [Evaluate](#evaluate)
   - [Statement](#statement)

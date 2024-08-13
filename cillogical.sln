@@ -3,19 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cillogical", "Cillogical\Cillogical.csproj", "{CB390765-5DFC-43E4-9C79-902A1261F700}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cillogical", "Cillogical\Cillogical.csproj", "{CB390765-5DFC-43E4-9C79-902A1261F700}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cillogical.Sample", "Cillogical.Sample\Cillogical.Sample.csproj", "{61433598-922B-4054-96B1-DAA14EA982B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cillogical.Sample", "Cillogical.Sample\Cillogical.Sample.csproj", "{61433598-922B-4054-96B1-DAA14EA982B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cillogical.Tests", "Cillogical.Tests\Cillogical.Tests.csproj", "{FEF6373F-5C96-48F3-8751-7354C331420A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cillogical.Tests", "Cillogical.Tests\Cillogical.Tests.csproj", "{FEF6373F-5C96-48F3-8751-7354C331420A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{CB390765-5DFC-43E4-9C79-902A1261F700}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -30,5 +27,8 @@ Global
 		{FEF6373F-5C96-48F3-8751-7354C331420A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEF6373F-5C96-48F3-8751-7354C331420A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEF6373F-5C96-48F3-8751-7354C331420A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
