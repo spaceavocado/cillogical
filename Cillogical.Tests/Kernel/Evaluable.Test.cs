@@ -2,7 +2,6 @@
 
 namespace Cillogical.UnitTests.Kernel;
 
-
 public class EvalualeTest
 {
     [Theory]

@@ -195,9 +195,6 @@ public class IllogicalTest
     [MemberData(nameof(EscapeCharacterTestData))]
     public void EscapeCharacter(object input, object expected)
     {
-        var operatorMapping = new Dictionary<Operator, string>(Parser.DEFAULT_OPERATOR_MAPPING);
-        operatorMapping[Operator.EQ] = "IS";
-
         var illogical = new Illogical(escapeCharacter: '*');
         var parsed = illogical.Parse(input);
 

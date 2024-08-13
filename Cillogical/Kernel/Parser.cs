@@ -36,7 +36,7 @@ public enum Operator {
     OVERLAP,
     PREFIX,
     SUFFIX,
-    NULL,
+    NONE,
     PRESENT,
 }
 
@@ -55,7 +55,7 @@ public class Parser {
         { Operator.GE, ">=" },
         { Operator.LT, "<" },
         { Operator.LE, "<=" },
-        { Operator.NULL, "NULL" },
+        { Operator.NONE, "NONE" },
         { Operator.PRESENT, "PRESENT" },
         { Operator.IN, "IN" },
         { Operator.NOTIN, "NOT IN" },
@@ -100,7 +100,7 @@ public class Parser {
             { operatorSymbol(Operator.GE), BinaryHandler((left, right) => new Ge(left, right, operatorSymbol(Operator.GE))) },
             { operatorSymbol(Operator.LT), BinaryHandler((left, right) => new Lt(left, right, operatorSymbol(Operator.LT))) },
             { operatorSymbol(Operator.LE), BinaryHandler((left, right) => new Le(left, right, operatorSymbol(Operator.LE))) },
-            { operatorSymbol(Operator.NULL), UnaryHandler((operand) => new Null(operand, operatorSymbol(Operator.NULL))) },
+            { operatorSymbol(Operator.NONE), UnaryHandler((operand) => new Null(operand, operatorSymbol(Operator.NONE))) },
             { operatorSymbol(Operator.PRESENT), UnaryHandler((operand) => new Present(operand, operatorSymbol(Operator.PRESENT))) },
             { operatorSymbol(Operator.IN), BinaryHandler((left, right) => new In(left, right, operatorSymbol(Operator.IN))) },
             { operatorSymbol(Operator.NOTIN), BinaryHandler((left, right) => new NotIn(left, right, operatorSymbol(Operator.NOTIN))) },
