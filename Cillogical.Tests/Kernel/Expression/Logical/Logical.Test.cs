@@ -21,8 +21,8 @@ public class LogicalTest
 {
     public static IEnumerable<object[]> SerializeTestData()
     {
-        yield return new object[] { "->", new IEvaluable[] { new Value(1), new Value(2) }, new object[] { "->", 1, 2 } };
-        yield return new object[] { "X", new IEvaluable[] { new Value(1) }, new object[] { "X", 1 } };
+        yield return ["->", new IEvaluable[] { new Value(1), new Value(2) }, new object[] { "->", 1, 2 }];
+        yield return ["X", new IEvaluable[] { new Value(1) }, new object[] { "X", 1 }];
     }
 
     [Theory]
@@ -35,9 +35,9 @@ public class LogicalTest
 
     public static IEnumerable<object[]> StringifyTestData()
     {
-        yield return new object[] { "->", new IEvaluable[] { new Value(1), new Value("2") }, "(1 -> \"2\")" };
-        yield return new object[] { "->", new IEvaluable[] { new Value(1), new Value("2"), new Value(1) }, "(1 -> \"2\" -> 1)" };
-        yield return new object[] { "X", new IEvaluable[] { new Value(1) }, "(X 1)" };
+        yield return ["->", new IEvaluable[] { new Value(1), new Value("2") }, "(1 -> \"2\")"];
+        yield return ["->", new IEvaluable[] { new Value(1), new Value("2"), new Value(1) }, "(1 -> \"2\" -> 1)"];
+        yield return ["X", new IEvaluable[] { new Value(1) }, "(X 1)"];
     }
 
     [Theory]

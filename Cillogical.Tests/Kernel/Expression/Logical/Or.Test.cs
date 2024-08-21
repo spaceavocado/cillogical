@@ -8,7 +8,7 @@ public class OrTest
 {
     public static IEnumerable<object[]> IvliadArgumentTestData()
     {
-        yield return new object[] { new IEvaluable[] { new Value(true) } };
+        yield return [new IEvaluable[] { new Value(true) }];
     }
 
     [Theory]
@@ -21,12 +21,12 @@ public class OrTest
     public static IEnumerable<object[]> EvaluateTestData()
     {
         // Truthy
-        yield return new object[] { new IEvaluable[] { new Value(true), new Value(true) }, true };
-        yield return new object[] { new IEvaluable[] { new Value(false), new Value(true) }, true };
-        yield return new object[] { new IEvaluable[] { new Value(true), new Value(true), new Value(false) }, true };
-        yield return new object[] { new IEvaluable[] { new Value(true), new Value(1) }, true };
+        yield return [new IEvaluable[] { new Value(true), new Value(true) }, true];
+        yield return [new IEvaluable[] { new Value(false), new Value(true) }, true];
+        yield return [new IEvaluable[] { new Value(true), new Value(true), new Value(false) }, true];
+        yield return [new IEvaluable[] { new Value(true), new Value(1) }, true];
         // Falsy
-        yield return new object[] { new IEvaluable[] { new Value(false), new Value(false) }, false };
+        yield return [new IEvaluable[] { new Value(false), new Value(false) }, false];
     }
 
     [Theory]
@@ -39,8 +39,8 @@ public class OrTest
 
     public static IEnumerable<object[]> EvaluateInvalidOperandTestData()
     {
-        yield return new object[] { new IEvaluable[] { new Value(1), new Value(true) } };
-        yield return new object[] { new IEvaluable[] { new Value(1), new Value("bogus") } };
+        yield return [new IEvaluable[] { new Value(1), new Value(true) }];
+        yield return [new IEvaluable[] { new Value(1), new Value("bogus") }];
     }
 
     [Theory]
@@ -53,16 +53,16 @@ public class OrTest
 
     public static IEnumerable<object[]> SimplifyTestData()
     {
-        yield return new object[] { new IEvaluable[] { new Value(true), new Value(true) }, true };
-        yield return new object[] { new IEvaluable[] { new Value(false), new Value(true) }, true };
-        yield return new object[] { new IEvaluable[] { new Value(true), new Value(1) }, true };
-        yield return new object[] { new IEvaluable[] { new Reference("RefA"), new Value(false) }, true };
-        yield return new object[] { new IEvaluable[] { new Reference("Missing"), new Value(false) }, new Reference("Missing") };
-        yield return new object[] {
+        yield return [new IEvaluable[] { new Value(true), new Value(true) }, true];
+        yield return [new IEvaluable[] { new Value(false), new Value(true) }, true];
+        yield return [new IEvaluable[] { new Value(true), new Value(1) }, true];
+        yield return [new IEvaluable[] { new Reference("RefA"), new Value(false) }, true];
+        yield return [new IEvaluable[] { new Reference("Missing"), new Value(false) }, new Reference("Missing")];
+        yield return [
             new IEvaluable[] { new Reference("Missing"), new Reference("Missing") },
-            new Or(new IEvaluable[] { new Reference("Missing"), new Reference("Missing") })
-        };
-        yield return new object[] { new IEvaluable[] { new Value(false), new Value("invalid"), new Value(false) }, new Value("invalid") };
+            new Or([new Reference("Missing"), new Reference("Missing")])
+        ];
+        yield return [new IEvaluable[] { new Value(false), new Reference("invalid"), new Value(false) }, new Reference("invalid")];
     }
 
     [Theory]

@@ -6,8 +6,8 @@ public class Suffix : ComparisonExpression
         base(
             "<with suffix>",
             symbol,
-            (object?[] operands) => ComparisonExpression.IsText(operands[0]) && ComparisonExpression.IsText(operands[1])
-                ? ((dynamic)operands[0].ToString()).EndsWith((dynamic)operands[1].ToString())
+            (object?[] operands) => IsText(operands[0]) && IsText(operands[1])
+                ? operands[0].ToString().EndsWith(operands[1].ToString())
                 : false,
             left,
             right

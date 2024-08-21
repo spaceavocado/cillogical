@@ -159,7 +159,7 @@ public class ReferenceTest
 
     public static IEnumerable<object?[]> SimplifyTestData()
     {
-        yield return new object[] { "refA", 1 };
+        yield return ["refA", 1];
         yield return new object?[] { "ignored", new Reference("ignored") };
         yield return new object?[] { "refB.refB1", new Reference("refB.refB1") };
         yield return new object?[] { "ref", new Reference("ref") };
@@ -169,7 +169,7 @@ public class ReferenceTest
     [MemberData(nameof(SimplifyTestData))]
     public void Simplify(string address, object? expected)
     {
-        var simplifyOptions = new SimplifyOptions(new string[] { "ignored" }, new Regex[] { new Regex(@"^refB") });
+        var simplifyOptions = new SimplifyOptions(["ignored"], [new Regex(@"^refB")]);
         var operand = new Reference(address, simplifyOptions: simplifyOptions);
         var simplified = operand.Simplify(EXAMPLE_CONTEXT());
 

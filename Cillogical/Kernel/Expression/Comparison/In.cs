@@ -13,7 +13,7 @@ public class In : ComparisonExpression
             }
 
             return leftIsEnumerable
-                ? ((IEnumerable<object>)operands[0]).Any((item) => object.Equals(item, operands[1]))
-                : ((IEnumerable<object>)operands[1]).Any((item) => object.Equals(item, operands[0]));
+                ? ((IEnumerable<object>)operands[0]).Any((item) => Equals(item, operands[1]))
+                : ((IEnumerable<object>)operands[1]).Any((item) => Equals(item, operands[0]));
         }, left, right) { }
 }

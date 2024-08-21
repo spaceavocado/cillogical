@@ -9,9 +9,9 @@ public class NotTest
     public static IEnumerable<object[]> EvaluateTestData()
     {
         // Truthy
-        yield return new object[] { new Value(false), true };
+        yield return [new Value(false), true];
         // Falsy
-        yield return new object[] { new Value(true), false };
+        yield return [new Value(true), false];
     }
 
     [Theory]
@@ -24,8 +24,8 @@ public class NotTest
 
     public static IEnumerable<object[]> EvaluateInvalidOperandTestData()
     {
-        yield return new object[] { new Value(1) };
-        yield return new object[] { new Value("bogus") };
+        yield return [new Value(1)];
+        yield return [new Value("bogus")];
     }
 
     [Theory]
@@ -38,11 +38,11 @@ public class NotTest
 
     public static IEnumerable<object[]> SimplifyTestData()
     {
-        yield return new object[] { new Value(false), true } ;
-        yield return new object[] { new Value(true), false };
-        yield return new object[] { new Reference("RefA"), false };
-        yield return new object[] { new Reference("Missing"), new Not(new Reference("Missing")) };
-        yield return new object[] { new Reference("invalid"), new Not(new Reference("invalid")) };
+        yield return [new Value(false), true];
+        yield return [new Value(true), false];
+        yield return [new Reference("RefA"), false];
+        yield return [new Reference("Missing"), new Not(new Reference("Missing"))];
+        yield return [new Reference("invalid"), new Not(new Reference("invalid"))];
     }
 
     [Theory]

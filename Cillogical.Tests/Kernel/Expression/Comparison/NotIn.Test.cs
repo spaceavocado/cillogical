@@ -9,19 +9,19 @@ public class NotInTest
     public static IEnumerable<object[]> EvaluateTestData()
     {
         // Truthy
-        yield return new object[] { new Value(2), new Collection(new IEvaluable[] { new Value(0), new Value(1) }), true };
-        yield return new object[] { new Collection(new IEvaluable[] { new Value(2) }), new Value(1), true };
-        yield return new object[] { new Value("2"), new Collection(new IEvaluable[] { new Value("1") }), true };
-        yield return new object[] { new Collection(new IEvaluable[] { new Value(true) }), new Value(false), true };
-        yield return new object[] { new Value(null), new Collection(new IEvaluable[] { new Value(1) }), true };
-        yield return new object[] { new Value(1), new Value(1), true };
-        yield return new object[] { new Value(null), new Value(null), true };
+        yield return [new Value(2), new Collection([new Value(0), new Value(1)]), true];
+        yield return [new Collection([new Value(2)]), new Value(1), true];
+        yield return [new Value("2"), new Collection([new Value("1")]), true];
+        yield return [new Collection([new Value(true)]), new Value(false), true];
+        yield return [new Value(null), new Collection([new Value(1)]), true];
+        yield return [new Value(1), new Value(1), true];
+        yield return [new Value(null), new Value(null), true];
         // Falsy
-        yield return new object[] { new Value(1), new Collection(new IEvaluable[] { new Value(1) }), false };
-        yield return new object[] { new Collection(new IEvaluable[] { new Value(1) }), new Value(1), false };
-        yield return new object[] { new Value("bogus"), new Collection(new IEvaluable[] { new Value("bogus") }), false };
-        yield return new object[] { new Collection(new IEvaluable[] { new Value(true) }), new Value(true), false };
-        yield return new object[] { new Value(null), new Collection(new IEvaluable[] { new Value(null) }), false };
+        yield return [new Value(1), new Collection([new Value(1)]), false];
+        yield return [new Collection([new Value(1)]), new Value(1), false];
+        yield return [new Value("bogus"), new Collection([new Value("bogus")]), false];
+        yield return [new Collection([new Value(true)]), new Value(true), false];
+        yield return [new Value(null), new Collection([new Value(null)]), false];
     }
 
     [Theory]

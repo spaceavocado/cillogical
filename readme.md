@@ -2,7 +2,7 @@
 
 A micro conditional engine used to parse the logical and comparison expressions, evaluate an expression in data context, and provide access to a text form of the given expression.
 
-> Revision: Aug 1, 2024.
+> Revision: Aug 21, 2024.
 
 Other implementations:
 - [TS/JS](https://github.com/spaceavocado/illogical)
@@ -17,7 +17,7 @@ This project has been developed to provide C// implementation of [spaceavocado/i
 You can install the **(c#)illogical** from [nuget](https://www.nuget.org/).
 
 ```sh
-dotnet add package Cillogical --version 1.0.0
+dotnet add package Cillogical --version 1.0.1
 ```
 
 **Table of Content**
