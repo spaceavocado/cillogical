@@ -19,10 +19,10 @@ public class Value : IEvaluable
     public object? Simplify(Dictionary<string, object?>? context = null) => value;
 
     public override string ToString() =>
-        this.value switch
+        value switch
         {
-            string => $"\"{this.value}\"",
-            char => $"\"{this.value}\"",
-            _ => $"{this.value}".ToLower()
+            string => $"\"{value}\"",
+            char => $"\"{value}\"",
+            _ => $"{value}".ToLower()
         };
 }

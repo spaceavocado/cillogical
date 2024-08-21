@@ -14,10 +14,10 @@ public class ParserTest
     [Theory]
     [InlineData("\\expected", true)]
     [InlineData("unexpected", false)]
-    public void IsEspaced(string input, bool expected)
+    public void isEscaped(string input, bool expected)
     {
         var parser = new Parser(serializeOptions: new DefaultSerializeOptions());
-        Assert.Equal(expected, parser.IsEspaced(input));
+        Assert.Equal(expected, parser.isEscaped(input));
     }
 
     [Theory]
@@ -32,10 +32,10 @@ public class ParserTest
 
     public static IEnumerable<object[]> ParseValueTestData()
     {
-        yield return new object[] { 1, new Value(1) };
-        yield return new object[] { 1.1, new Value(1.1) };
-        yield return new object[] { "val", new Value("val") };
-        yield return new object[] { true, new Value(true) };
+        yield return [1, new Value(1)];
+        yield return [1.1, new Value(1.1)];
+        yield return ["val", new Value("val")];
+        yield return [true, new Value(true)];
     }
 
     [Theory]
@@ -51,7 +51,7 @@ public class ParserTest
 
     public static IEnumerable<object[]> ParseReferenceTestData()
     {
-        yield return new object[] { MockAddress("address"), new Reference("address") };
+        yield return [MockAddress("address"), new Reference("address")];
     }
 
     [Theory]
@@ -67,26 +67,26 @@ public class ParserTest
 
     public static IEnumerable<object[]> ParseCollectionTestData()
     {
-        yield return new object[] {
+        yield return [
             new object[] { 1 },
-            new Collection(new IEvaluable[] { new Value(1) })
-        };
-        yield return new object[] {
+            new Collection([new Value(1)])
+        ];
+        yield return [
             new object[] { MockAddress("address") },
-            new Collection(new IEvaluable[] { new Reference("address") })
-        };
-        yield return new object[] {
+            new Collection([new Reference("address")])
+        ];
+        yield return [
             new object[] { "value", true },
-            new Collection(new IEvaluable[] { new Value("value"), new Value(true) })
-        };
-        yield return new object[] {
+            new Collection([new Value("value"), new Value(true)])
+        ];
+        yield return [
             new object[] { 1, "value", true, MockAddress("address") },
-            new Collection(new IEvaluable[] { new Value(1), new Value("value"), new Value(true), new Reference("address") })
-        };
-        yield return new object[] {
+            new Collection([new Value(1), new Value("value"), new Value(true), new Reference("address")])
+        ];
+        yield return [
             new object[] { $"{Parser.DEFAULT_ESCAPE_CHARACTER}{Parser.DEFAULT_OPERATOR_MAPPING[Operator.AND]}", 1 },
-            new Collection(new IEvaluable[] { new Value($"{Parser.DEFAULT_OPERATOR_MAPPING[Operator.AND]}"), new Value(1) })
-        };
+            new Collection([new Value($"{Parser.DEFAULT_OPERATOR_MAPPING[Operator.AND]}"), new Value(1)])
+        ];
     }
 
     [Theory]
@@ -102,18 +102,19 @@ public class ParserTest
 
     public static IEnumerable<object[]> ParseComparisonTestData()
     {
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.EQ], 1, 1 }, new Eq(new Value(1), new Value(1)) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.NE], 1, 1 }, new Ne(new Value(1), new Value(1)) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.GT], 1, 1 }, new Gt(new Value(1), new Value(1)) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.GE], 1, 1 }, new Ge(new Value(1), new Value(1)) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.LT], 1, 1 }, new Lt(new Value(1), new Value(1)) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.LE], 1, 1 }, new Le(new Value(1), new Value(1)) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.IN], 1, 1 }, new In(new Value(1), new Value(1)) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.NOTIN], 1, 1 }, new NotIn(new Value(1), new Value(1)) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.NONE], 1 }, new Null(new Value(1)) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.PRESENT], 1 }, new Present(new Value(1)) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.PREFIX], 1, 1 }, new Prefix(new Value(1), new Value(1)) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.SUFFIX], 1, 1 }, new Suffix(new Value(1), new Value(1)) };
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.EQ], 1, 1 }, new Eq(new Value(1), new Value(1))];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.NE], 1, 1 }, new Ne(new Value(1), new Value(1))];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.GT], 1, 1 }, new Gt(new Value(1), new Value(1))];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.GE], 1, 1 }, new Ge(new Value(1), new Value(1))];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.LT], 1, 1 }, new Lt(new Value(1), new Value(1))];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.LE], 1, 1 }, new Le(new Value(1), new Value(1))];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.IN], 1, 1 }, new In(new Value(1), new Value(1))];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.NOTIN], 1, 1 }, new NotIn(new Value(1), new Value(1))];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.NONE], 1 }, new Null(new Value(1))];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.PRESENT], 1 }, new Present(new Value(1))];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.PREFIX], 1, 1 }, new Prefix(new Value(1), new Value(1))];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.SUFFIX], 1, 1 }, new Suffix(new Value(1), new Value(1))];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.OVERLAP], 1, 1 }, new Overlap(new Value(1), new Value(1))];
     }
 
     [Theory]
@@ -129,11 +130,11 @@ public class ParserTest
 
     public static IEnumerable<object[]> ParseLogicalTestData()
     {
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.AND], true, true }, new And(new IEvaluable[] { new Value(true), new Value(true) }) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.OR], true, true, false }, new Or(new IEvaluable[] { new Value(true), new Value(true), new Value(false) }) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.NOR], true, true }, new Nor(new IEvaluable[] { new Value(true), new Value(true) }) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.XOR], true, true }, new Xor(new IEvaluable[] { new Value(true), new Value(true) }) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.NOT], true }, new Not(new Value(true)) };
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.AND], true, true }, new And([new Value(true), new Value(true)])];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.OR], true, true, false }, new Or([new Value(true), new Value(true), new Value(false)])];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.NOR], true, true }, new Nor([new Value(true), new Value(true)])];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.XOR], true, true }, new Xor([new Value(true), new Value(true)])];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.NOT], true }, new Not(new Value(true))];
     }
 
     [Theory]
@@ -157,7 +158,7 @@ public class ParserTest
 
     public static IEnumerable<object[]> UnexpectedOperandExceptionTestData()
     {
-        yield return new object[] { new object[] { } };
+        yield return [new object[] { }];
     }
 
     [Theory]
@@ -170,8 +171,8 @@ public class ParserTest
 
     public static IEnumerable<object[]> UnexpectedExpressionExceptionTestData()
     {
-        yield return new object[] { new object[] { "X", 1, 1 } };
-        yield return new object[] { new object[] { 1, 1, 1 } };
+        yield return [new object[] { "X", 1, 1 }];
+        yield return [new object[] { 1, 1, 1 }];
     }
 
     [Theory]

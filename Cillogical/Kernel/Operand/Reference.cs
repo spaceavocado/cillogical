@@ -92,7 +92,7 @@ public class Reference : IEvaluable
         context = ContextUtils.FlattenContext(context);
         var (found, resolvedPath, value) = Evaluate(context, path, dataType);
 
-        if (found && !IsIgnoredPath(path, simplifyOptions?.IgnoredPaths, simplifyOptions?.IgnoredPathsRx)) {
+        if (found && !IsIgnoredPath(resolvedPath, simplifyOptions?.IgnoredPaths, simplifyOptions?.IgnoredPathsRx)) {
             return value;
         }
 

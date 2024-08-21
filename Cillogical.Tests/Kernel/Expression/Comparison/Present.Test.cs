@@ -9,15 +9,15 @@ public class PresentTest
     public static IEnumerable<object[]> EvaluateTestData()
     {
         // Truthy
-        yield return new object[] { new Value(1), true };
-        yield return new object[] { new Value(1.1), true };
-        yield return new object[] { new Value(1.1f), true };
-        yield return new object[] { new Value("1"), true };
-        yield return new object[] { new Value('c'), true };
-        yield return new object[] { new Value(true), true };
-        yield return new object[] { new Value(false), true };
+        yield return [new Value(1), true];
+        yield return [new Value(1.1), true];
+        yield return [new Value(1.1f), true];
+        yield return [new Value("1"), true];
+        yield return [new Value('c'), true];
+        yield return [new Value(true), true];
+        yield return [new Value(false), true];
         // Falsy
-        yield return new object[] { new Value(null), false };
+        yield return [new Value(null), false];
     }
 
     [Theory]

@@ -52,7 +52,7 @@ public class Nor : LogicalExpression
         }
 
         if (simplified.Length == 1) {
-            return new Not(simplified[0]);
+            return new Not(simplified[0], notSymbol);
         }
 
         return new Nor(simplified, symbol, notSymbol);

@@ -6,7 +6,7 @@ public class Ge : ComparisonExpression
         base(
             ">=",
             symbol,
-            (object?[] operands) => ComparisonExpression.IsNumber(operands[0]) && ComparisonExpression.IsNumber(operands[1])
+            (object?[] operands) => IsNumber(operands[0]) && IsNumber(operands[1])
                 ? (dynamic)operands[0] >= (dynamic)operands[1]
                 : false,
             left,

@@ -4,16 +4,17 @@ public class Overlap : ComparisonExpression
     public Overlap(IEvaluable left, IEvaluable right, string symbol = "OVERLAP") :
         base("<overlaps>", symbol, (object?[] operands) =>
         {
-            var leftIsEnumerable = operands[0] is IEnumerable<object>;
-            var rightIsEnumerable = operands[1] is IEnumerable<object>;
+            var left = operands[0] is IEnumerable<object>
+                ? (IEnumerable<object>)operands[0]
+                : [operands[0]];
 
-            if (!leftIsEnumerable || !rightIsEnumerable) {
-                return false;
-            }
+            var right = operands[1] is IEnumerable<object>
+                ? (IEnumerable<object>)operands[1]
+                : [operands[1]];
 
-            foreach (var i in (IEnumerable<object>)operands[0]) {
-                foreach (var j in (IEnumerable<object>)operands[1]) {
-                    if (object.Equals(i, j)) {
+            foreach (var i in left) {
+                foreach (var j in right) {
+                    if (Equals(i, j)) {
                         return true;
                     }
                 }

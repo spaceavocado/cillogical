@@ -21,19 +21,16 @@ public class EvalualeTest
 
     public static IEnumerable<object?[]> FlattenContextData()
     {
-        yield return new object?[] { null, null };
-
-        yield return new object[] {
+        yield return [null, null];
+        yield return [
             new FlattenContext<string, object> { { "a", 1 } },
             new FlattenContext<string, object> { { "a", 1 } }
-        };
-
-        yield return new object[] {
+        ];
+        yield return [
             new Dictionary<string, object?> { { "a", 1 } },
             new Dictionary<string, object?> { { "a", 1 } }
-        };
-
-        yield return new object[] {
+        ];
+        yield return [
             new Dictionary<string, object?> {
                 { "a", 1 },
                 { "b", new Dictionary<string, object?> {
@@ -43,17 +40,15 @@ public class EvalualeTest
                 { "c", null },
             },
             new Dictionary<string, object?> { { "a", 1 }, { "b.c", 5 }, { "b.d", true }, { "c", null } }
-        };
-
-        yield return new object[] {
+        ];
+        yield return [
             new Dictionary<string, object?> {
                 { "a", 1 },
                 { "b", new object[] { 1, "val", true }
             }},
             new Dictionary<string, object?> { { "a", 1 }, { "b[0]", 1 }, { "b[1]", "val" }, { "b[2]", true } }
-        };
-
-        yield return new object[] {
+        ];
+        yield return [
             new Dictionary<string, object?> {
                 { "a", 1 },
                 { "b", new object[] {
@@ -67,7 +62,7 @@ public class EvalualeTest
                 }}
             },
             new Dictionary<string, object?> { { "a", 1 }, { "b[0]", 1.1 }, { "b[1].c", false }, { "b[1].d", 1.2f }, { "b[2]", 'c' } }
-        };
+        ];
     }
 
     [Theory]

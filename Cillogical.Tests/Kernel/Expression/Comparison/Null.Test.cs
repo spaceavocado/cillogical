@@ -9,15 +9,15 @@ public class NullTest
     public static IEnumerable<object[]> EvaluateTestData()
     {
         // Truthy
-        yield return new object[] { new Value(null), true };
+        yield return [new Value(null), true];
         // Falsy
-        yield return new object[] { new Value(1), false };
-        yield return new object[] { new Value(1.1), false };
-        yield return new object[] { new Value(1.1f), false };
-        yield return new object[] { new Value("1"), false };
-        yield return new object[] { new Value('c'), false };
-        yield return new object[] { new Value(true), false };
-        yield return new object[] { new Value(false), false };
+        yield return [new Value(1), false];
+        yield return [new Value(1.1), false];
+        yield return [new Value(1.1f), false];
+        yield return [new Value("1"), false];
+        yield return [new Value('c'), false];
+        yield return [new Value(true), false];
+        yield return [new Value(false), false];
     }
 
     [Theory]

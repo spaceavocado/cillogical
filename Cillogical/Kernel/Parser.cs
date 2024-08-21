@@ -93,7 +93,7 @@ public class Parser {
             { operatorSymbol(Operator.NOR), MultiaryHandler((operands) => new Nor(operands, operatorSymbol(Operator.NOR), operatorSymbol(Operator.NOT))) },
             { operatorSymbol(Operator.XOR), MultiaryHandler((operands) => new Xor(operands, operatorSymbol(Operator.XOR), operatorSymbol(Operator.NOT), operatorSymbol(Operator.NOR))) },
             { operatorSymbol(Operator.NOT), UnaryHandler((operand) => new Not(operand, operatorSymbol(Operator.NOT))) },
-            //// Comparison
+            // Comparison
             { operatorSymbol(Operator.EQ), BinaryHandler((left, right) => new Eq(left, right, operatorSymbol(Operator.EQ))) },
             { operatorSymbol(Operator.NE), BinaryHandler((left, right) => new Ne(left, right, operatorSymbol(Operator.NE))) },
             { operatorSymbol(Operator.GT), BinaryHandler((left, right) => new Gt(left, right, operatorSymbol(Operator.GT))) },
@@ -127,7 +127,7 @@ public class Parser {
             return CreateOperand(expression);
         }
 
-        if (expression[0] is string && IsEspaced((string)expression[0])) {
+        if (expression[0] is string && isEscaped((string)expression[0])) {
             return CreateOperand(new object[] { ((string)expression[0]).Substring(1) }.Concat(expression.Skip(1)));
         }
 
@@ -148,7 +148,7 @@ public class Parser {
     private Func<IEvaluable[], IEvaluable> MultiaryHandler(Func<IEvaluable[], IEvaluable> handler) =>
         (IEvaluable[] operands) => handler(operands);
 
-    public bool IsEspaced(string value) =>
+    public bool isEscaped(string value) =>
         value.StartsWith(escapeCharacter);
 
     public string? ToReferenceAddress(object? reference) =>

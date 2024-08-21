@@ -23,8 +23,8 @@ public class ComparisionTest
 {
     public static IEnumerable<object[]> EvaluateTestData()
     {
-        yield return new object[] { new Value(1), new Value(1), true };
-        yield return new object[] { new Value(1), new Value("1"), false };
+        yield return [new Value(1), new Value(1), true];
+        yield return [new Value(1), new Value("1"), false];
     }
 
     [Theory]
@@ -37,7 +37,7 @@ public class ComparisionTest
 
     public static IEnumerable<object[]> EvaluateExceptionTestData()
     {
-        yield return new object[] { new RogueOperand(), new RogueOperand() };
+        yield return [new RogueOperand(), new RogueOperand()];
     }
 
     [Theory]
@@ -50,8 +50,8 @@ public class ComparisionTest
 
     public static IEnumerable<object[]> SerializeTestData()
     {
-        yield return new object[] { "->", new object[] { "->", 1, 2 }, new Value(1), new Value(2) };
-        yield return new object[] { "X", new object[] { "X", 1 }, new Value(1) };
+        yield return ["->", new object[] { "->", 1, 2 }, new Value(1), new Value(2)];
+        yield return ["X", new object[] { "X", 1 }, new Value(1)];
     }
 
     [Theory]
@@ -64,24 +64,24 @@ public class ComparisionTest
 
     public static IEnumerable<object[]> SimplifyTestData()
     {
-        yield return new object[] {
+        yield return [
             new Value(0),
             new Reference("Missing"),
             new ComparisionMock("==", new Value(0), new Reference("Missing"))
-        };
-        yield return new object[] {
+        ];
+        yield return [
             new Reference("Missing"),
             new Value(0),
             new ComparisionMock("==", new Reference("Missing"), new Value(0))
-        };
-        yield return new object[] {
+        ];
+        yield return [
             new Reference("Missing"),
             new Reference("Missing"),
             new ComparisionMock("==", new Reference("Missing"), new Reference("Missing"))
-        };
-        yield return new object[] { new Value(0), new Value(0), true };
-        yield return new object[] { new Value(0), new Value(1), false };
-        yield return new object[] { new Value("A"), new Reference("RefA"), true };
+        ];
+        yield return [new Value(0), new Value(0), true];
+        yield return [new Value(0), new Value(1), false];
+        yield return [new Value("A"), new Reference("RefA"), true];
     }
 
     [Theory]
@@ -101,8 +101,8 @@ public class ComparisionTest
 
     public static IEnumerable<object[]> StringifyTestData()
     {
-        yield return new object[] { "==", "(1 == 2)", new Value(1), new Value(2), };
-        yield return new object[] { "<null>", "(1 <null>)", new Value(1) };
+        yield return ["==", "(1 == 2)", new Value(1), new Value(2),];
+        yield return ["<null>", "(1 <null>)", new Value(1)];
     }
 
     [Theory]

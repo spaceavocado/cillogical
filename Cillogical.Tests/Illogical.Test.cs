@@ -37,11 +37,11 @@ public class IllogicalTest
 
     public static IEnumerable<object[]> ParseTestData()
     {
-        yield return new object[] { 1, new Value(1) };
-        yield return new object[] { MockAddress("path"), new Reference("path") };
-        yield return new object[] { new object[] { 1 }, new Collection(new IEvaluable[] { new Value(1) } ) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.EQ], 1, 1 }, new Eq(new Value(1), new Value(1)) };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.AND], true, true }, new And(new IEvaluable[] { new Value(true), new Value(true) }) };
+        yield return [1, new Value(1)];
+        yield return [MockAddress("path"), new Reference("path")];
+        yield return [new object[] { 1 }, new Collection([new Value(1)] )];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.EQ], 1, 1 }, new Eq(new Value(1), new Value(1))];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.AND], true, true }, new And([new Value(true), new Value(true)])];
     }
 
     [Theory]
@@ -57,11 +57,11 @@ public class IllogicalTest
 
     public static IEnumerable<object[]> EvaluateTestData()
     {
-        yield return new object[] { 1, 1 };
-        yield return new object[] { MockAddress("path"), "value" };
-        yield return new object[] { new object[] { 1 }, new object[] { 1 } };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.EQ], 1, 1 }, true };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.AND], true, false }, false };
+        yield return [1, 1];
+        yield return [MockAddress("path"), "value"];
+        yield return [new object[] { 1 }, new object[] { 1 }];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.EQ], 1, 1 }, true];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.AND], true, false }, false];
     }
 
     [Theory]
@@ -76,15 +76,15 @@ public class IllogicalTest
 
     public static IEnumerable<object[]> SimplifyTestData()
     {
-        yield return new object[] { 1, 1 };
-        yield return new object[] { MockAddress("path"), "value" };
-        yield return new object[] { MockAddress("nested.inner"), 2 };
-        yield return new object[] { MockAddress("list[1]"), 3 };
-        yield return new object[] { MockAddress("missing"), new Reference("missing") };
-        yield return new object[] { new object[] { 1 }, new object[] { 1 } };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.EQ], 1, 1 }, true };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.AND], true, true }, true };
-        yield return new object[] { new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.AND], true, MockAddress("missing") }, new Reference("missing") };
+        yield return [1, 1];
+        yield return [MockAddress("path"), "value"];
+        yield return [MockAddress("nested.inner"), 2];
+        yield return [MockAddress("list[1]"), 3];
+        yield return [MockAddress("missing"), new Reference("missing")];
+        yield return [new object[] { 1 }, new object[] { 1 }];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.EQ], 1, 1 }, true];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.AND], true, true }, true];
+        yield return [new object[] { Parser.DEFAULT_OPERATOR_MAPPING[Operator.AND], true, MockAddress("missing") }, new Reference("missing")];
     }
 
     [Theory]
@@ -108,12 +108,12 @@ public class IllogicalTest
 
     public static IEnumerable<object[]> StatementTestData()
     {
-        yield return new object[] { 1, "1" };
-        yield return new object[] { true, "true" };
-        yield return new object[] { "val", "\"val\"" };
-        yield return new object[] { "$refA", "{refA}" };
-        yield return new object[] { new object[] { "==", "$refA", "resolvedA" }, "({refA} == \"resolvedA\")" };
-        yield return new object[] { new object[] { "AND", new object[] { "==", 1, 1 }, new object[] { "!=", 2, 1 } }, "((1 == 1) AND (2 != 1))" };
+        yield return [1, "1"];
+        yield return [true, "true"];
+        yield return ["val", "\"val\""];
+        yield return ["$refA", "{refA}"];
+        yield return [new object[] { "==", "$refA", "resolvedA" }, "({refA} == \"resolvedA\")"];
+        yield return [new object[] { "AND", new object[] { "==", 1, 1 }, new object[] { "!=", 2, 1 } }, "((1 == 1) AND (2 != 1))"];
     }
 
     [Theory]
@@ -128,8 +128,8 @@ public class IllogicalTest
 
     public static IEnumerable<object[]> OperatorMappingTestData()
     {
-        yield return new object[] { new object[] { "IS", 1, 1 }, true };
-        yield return new object[] { new object[] { "IS", 1, 2 }, false };
+        yield return [new object[] { "IS", 1, 1 }, true];
+        yield return [new object[] { "IS", 1, 2 }, false];
     }
 
     [Theory]
@@ -147,8 +147,8 @@ public class IllogicalTest
 
     public static IEnumerable<object[]> SerializeOptionsTestData()
     {
-        yield return new object[] { "__ref", new Reference("ref") };
-        yield return new object[] { "$ref", new Value("$ref") };
+        yield return ["__ref", new Reference("ref")];
+        yield return ["$ref", new Value("$ref")];
     }
 
     [Theory]
@@ -165,8 +165,8 @@ public class IllogicalTest
 
     public static IEnumerable<object?[]> SimplifyOptionsTestData()
     {
-        yield return new object[] { "$refA", 1 };
-        yield return new object[] { "$refB", new Reference("refB") };
+        yield return ["$refA", 1];
+        yield return ["$refB", new Reference("refB")];
         yield return new object?[] { "$ignored", new Reference("ignored") };
     }
 
@@ -175,7 +175,7 @@ public class IllogicalTest
     public void SimplifyOptions(object input, object? expected)
     {
         var illogical = new Illogical(simplifyOptions: new MockSimplifyOptions(
-            new string[] { "ignored" }, new Regex[] { new Regex(@"^refB") }
+            ["ignored"], [new Regex(@"^refB")]
         ));
         var simplified = illogical.Simplify(input, new Dictionary<string, object?> { { "refA", 1 }, { "refB", 2 }, { "ignored", 3 } });
 
@@ -188,7 +188,7 @@ public class IllogicalTest
 
     public static IEnumerable<object[]> EscapeCharacterTestData()
     {
-        yield return new object[] { new object[] { "*AND", 1, 1 }, new Collection(new IEvaluable[] { new Value("AND"), new Value(1), new Value(1) }) };
+        yield return [new object[] { "*AND", 1, 1 }, new Collection([new Value("AND"), new Value(1), new Value(1)])];
     }
 
     [Theory]

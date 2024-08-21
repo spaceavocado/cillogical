@@ -5,8 +5,8 @@ public class Prefix : ComparisonExpression
         base(
             "<prefixes>",
             symbol,
-            (object?[] operands) => ComparisonExpression.IsText(operands[0]) && ComparisonExpression.IsText(operands[1])
-                ? ((dynamic)operands[1].ToString()).StartsWith((dynamic)operands[0].ToString())
+            (object?[] operands) => IsText(operands[0]) && IsText(operands[1])
+                ? operands[1].ToString().StartsWith(operands[0].ToString())
                 : false,
             left,
             right
