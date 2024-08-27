@@ -8,6 +8,7 @@ Other implementations:
 - [TS/JS](https://github.com/spaceavocado/illogical)
 - [GO](https://github.com/spaceavocado/goillogical)
 - [Python](https://github.com/spaceavocado/pyillogical)
+- [Java](https://github.com/spaceavocado/jillogical)
 
 ## About
 
