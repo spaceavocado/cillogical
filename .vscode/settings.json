@@ -1,3 +1,6 @@
 {
-    "dotnet.defaultSolution": "Cillogical.sln"
+    "dotnet.defaultSolution": "Cillogical.sln",
+    "cSpell.words": [
+        "Cillogical"
+    ]
 }
